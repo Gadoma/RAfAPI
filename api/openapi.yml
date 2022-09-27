@@ -245,7 +245,7 @@ components:
     AffirmationDateTime:
       type: string
       format: date-time
-      example: "2022-09-11T17:32:28Z
+      example: "2022-09-11T17:32:28Z"
     Affirmation:
       type: object
       properties:
