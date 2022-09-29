@@ -19,13 +19,16 @@ type AffirmationUpdate struct {
 	Text       string `json:"text"`
 }
 
+var ErrorAffirmationUpdateInvalidCategoryId error = errors.New("Affirmation CategoryId must be a positive integer")
+var ErrorAffirmationUpdateInvalidText error = errors.New("Affirmation Text cannot be empty")
+
 func (au *AffirmationUpdate) Validate() error {
 	if au.CategoryId < 1 {
-		return errors.New("Affirmation CategoryId must be a positive integer")
+		return ErrorAffirmationUpdateInvalidCategoryId
 	}
 
 	if au.Text == "" {
-		return errors.New("Affirmation Text cannot be empty")
+		return ErrorAffirmationUpdateInvalidText
 	}
 
 	return nil
