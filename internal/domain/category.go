@@ -24,7 +24,15 @@ func (cu *CategoryUpdate) Validate() error {
 	return nil
 }
 
-type CategoriesService interface {
+type CategoryService interface {
+	GetCategories(ctx context.Context) ([]*Category, int, error)
+	GetCategory(ctx context.Context, id int) (*Category, error)
+	CreateCategory(ctx context.Context, cu *CategoryUpdate) (int, error)
+	UpdateCategory(ctx context.Context, id int, cu *CategoryUpdate) error
+	DeleteCategory(ctx context.Context, id int) error
+}
+
+type CategoryRepository interface {
 	GetCategories(ctx context.Context) ([]*Category, int, error)
 	GetCategory(ctx context.Context, id int) (*Category, error)
 	CreateCategory(ctx context.Context, cu *CategoryUpdate) (int, error)
