@@ -11,3 +11,7 @@ type RandomAffirmation struct {
 type RandomAffirmationService interface {
 	GetRandomAffirmation(ctx context.Context, categortIds []int) (*RandomAffirmation, error)
 }
+
+type RandomAffirmationRespository interface {
+	GetRandomAffirmation(ctx context.Context, categortIds []int) (*RandomAffirmation, error)
+}

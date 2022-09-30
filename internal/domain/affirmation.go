@@ -41,3 +41,11 @@ type AffirmationService interface {
 	UpdateAffirmation(ctx context.Context, id int, au *AffirmationUpdate) error
 	DeleteAffirmation(ctx context.Context, id int) error
 }
+
+type AffirmationRepository interface {
+	GetAffirmations(ctx context.Context) ([]*Affirmation, int, error)
+	GetAffirmation(ctx context.Context, id int) (*Affirmation, error)
+	CreateAffirmation(ctx context.Context, au *AffirmationUpdate) (int, error)
+	UpdateAffirmation(ctx context.Context, id int, au *AffirmationUpdate) error
+	DeleteAffirmation(ctx context.Context, id int) error
+}
