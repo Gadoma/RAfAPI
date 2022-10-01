@@ -3,8 +3,8 @@ package database_test
 import (
 	"testing"
 
-	"github.com/Gadoma/RandomAffirmationsApi/internal/infrastructure/database"
-	"github.com/Gadoma/RandomAffirmationsApi/test"
+	"github.com/gadoma/rafapi/internal/infrastructure/database"
+	"github.com/gadoma/rafapi/test"
 )
 
 func TestMain(m *testing.M) {
