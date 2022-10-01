@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
-  title: Random Affirmations API - OpenAPI 3.0
+  title: Random Affirmations API (RAfAPI) - OpenAPI 3.0
   description: |-
     This is a sample API which offers random affirmations. The returned content gets composed of random affirmation sentences selected from the requested categories. It is possible to govern both the categories and the component affirmation sentences.
-  version: 1.0.0
+  version: 1.0.1
 servers:
   - url: http://localhost:5000
     description: Your local instance
@@ -110,8 +110,6 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
-        "404":
-          $ref: "#/components/responses/404NotFound"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
     delete:
@@ -125,8 +123,6 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
-        "404":
-          $ref: "#/components/responses/404NotFound"
   /categories:
     get:
       summary: Get a list of all available categories
@@ -206,8 +202,6 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
-        "404":
-          $ref: "#/components/responses/404NotFound"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
     delete:
@@ -221,8 +215,6 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
-        "404":
-          $ref: "#/components/responses/404NotFound"
 
 components:
   schemas:

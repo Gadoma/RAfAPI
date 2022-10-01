@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gadoma/rafapi/internal/domain"
@@ -35,6 +36,10 @@ func NewServer() *Server {
 
 	s.router.NotFoundHandler = http.HandlerFunc(s.handleNotFound)
 
+	r := s.router.PathPrefix("/").Subrouter()
+
+	s.registerAffirmationRoutes(r)
+
 	return s
 }
 
@@ -60,4 +65,14 @@ func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleNotFound(w http.ResponseWriter, r *http.Request) {
 	s.respondError(w, "Not found", http.StatusNotFound)
+}
+
+func (s *Server) parseIdParameter(p string) (uint64, error) {
+	id, err := strconv.ParseUint(p, 10, 64)
+
+	if err != nil || id == 0 {
+		return 0, err
+	}
+
+	return id, nil
 }
