@@ -22,6 +22,7 @@ type Server struct {
 	Domain string
 
 	AffirmationService domain.AffirmationService
+	CategoryService    domain.CategoryService
 }
 
 func NewServer() *Server {
@@ -39,6 +40,7 @@ func NewServer() *Server {
 	r := s.router.PathPrefix("/").Subrouter()
 
 	s.registerAffirmationRoutes(r)
+	s.registerCategoryRoutes(r)
 
 	return s
 }
