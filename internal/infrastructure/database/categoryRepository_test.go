@@ -23,9 +23,9 @@ func TestCategoryRepositoryGetCategories(t *testing.T) {
 		t.Error(err)
 	} else if got, want := a[0].Id, 1; got != want {
 		t.Errorf("a[0].Id=%v, want %v", got, want)
-	} else if got, want := len(a), 4; got != want {
+	} else if got, want := len(a), 5; got != want {
 		t.Errorf("len=%v, want %v", got, want)
-	} else if got, want := n, 4; got != want {
+	} else if got, want := n, 5; got != want {
 		t.Errorf("n=%v, want %v", got, want)
 	}
 }
