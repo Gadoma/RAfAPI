@@ -93,11 +93,13 @@ func (app *App) Run(ctx context.Context) (err error) {
 	}
 
 	affirmationService := application.NewAffirmationService(database.NewAffirmationRepository(app.DB))
+	categoryService := application.NewCategoryService(database.NewCategoryRepository(app.DB))
 
 	app.HTTPServer.Addr = app.Config.ServerAddr
 	app.HTTPServer.Domain = app.Config.ServerDomain
 
 	app.HTTPServer.AffirmationService = affirmationService
+	app.HTTPServer.CategoryService = categoryService
 
 	if err := app.HTTPServer.Open(); err != nil {
 		return fmt.Errorf("cannot open http server on %s because of %w", app.Config.ServerAddr, err)
