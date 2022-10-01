@@ -144,9 +144,7 @@ func getAffirmation(ctx context.Context, tx *Tx, id int) (*domain.Affirmation, e
 		FROM 
 			affirmations
 		WHERE 
-			id = ?
-		ORDER BY 
-			id ASC`,
+			id = ?`,
 		id,
 	)
 
