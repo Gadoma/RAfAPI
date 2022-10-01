@@ -27,8 +27,8 @@ func prepareAffirmationServiceTest() (
 	}
 
 	affirmationUpdateStub = domain.AffirmationUpdate{
-		CategoryId: 1,
-		Text:       "I am a stub.",
+		CategoryId: 2,
+		Text:       "I am another stub.",
 	}
 
 	ctx = context.Background()
