@@ -3,7 +3,7 @@ package domain_test
 import (
 	"testing"
 
-	"github.com/Gadoma/RandomAffirmationsApi/internal/domain"
+	"github.com/gadoma/rafapi/internal/domain"
 )
 
 func TestCategoryUpdateValidate(t *testing.T) {

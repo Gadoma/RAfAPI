@@ -1,4 +1,4 @@
-module github.com/Gadoma/RandomAffirmationsApi
+module github.com/gadoma/rafapi
 
 go 1.19
 
