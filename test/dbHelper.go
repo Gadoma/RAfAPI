@@ -33,8 +33,6 @@ func PrepareTestDB() error {
 }
 
 func CleanupTestDB() error {
-	os.Remove(GetDSN(TestDbDSN) + "-wal")
-	os.Remove(GetDSN(TestDbDSN) + "-shm")
 	return os.Remove(GetDSN(TestDbDSN))
 }
 
