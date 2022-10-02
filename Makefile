@@ -1,5 +1,5 @@
 NAME=rafapi
-.DEFAULT_GOAL := list
+.DEFAULT_GOAL:=list
 
 go-test: # run tests
 	./scripts/test.sh
