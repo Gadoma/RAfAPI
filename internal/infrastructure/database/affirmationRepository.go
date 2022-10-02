@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/gadoma/rafapi/internal/domain"
@@ -134,7 +135,9 @@ func getAffirmations(ctx context.Context, tx *Tx) ([]*domain.Affirmation, int, e
 }
 
 func getAffirmation(ctx context.Context, tx *Tx, id int) (*domain.Affirmation, error) {
-	rows, err := tx.QueryContext(ctx,
+	var affirmation domain.Affirmation
+
+	err := tx.QueryRowContext(ctx,
 		`SELECT 
 			id, 
 			text,
@@ -146,33 +149,19 @@ func getAffirmation(ctx context.Context, tx *Tx, id int) (*domain.Affirmation, e
 		WHERE 
 			id = ?`,
 		id,
+	).Scan(
+		&affirmation.Id,
+		&affirmation.Text,
+		&affirmation.CategoryId,
+		(*StringTime)(&affirmation.CreatedAt),
+		(*StringTime)(&affirmation.UpdatedAt),
 	)
 
-	if err != nil {
-		return nil, err
+	if err == sql.ErrNoRows {
+		return nil, nil
 	}
 
-	defer rows.Close()
-
-	if rows.Next() {
-		var affirmation domain.Affirmation
-		if err := rows.Scan(
-			&affirmation.Id,
-			&affirmation.Text,
-			&affirmation.CategoryId,
-			(*StringTime)(&affirmation.CreatedAt),
-			(*StringTime)(&affirmation.UpdatedAt),
-		); err != nil {
-			return nil, err
-		}
-		return &affirmation, nil
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return nil, nil
+	return &affirmation, nil
 }
 
 func createAffirmation(ctx context.Context, tx *Tx, text string, categoryId int) (int, error) {

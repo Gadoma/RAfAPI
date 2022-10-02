@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/gadoma/rafapi/internal/domain"
 )
@@ -127,7 +128,9 @@ func getCategories(ctx context.Context, tx *Tx) ([]*domain.Category, int, error)
 }
 
 func getCategory(ctx context.Context, tx *Tx, id int) (*domain.Category, error) {
-	rows, err := tx.QueryContext(ctx,
+	var category domain.Category
+
+	err := tx.QueryRowContext(ctx,
 		`SELECT 
 			id, 
 			name
@@ -136,30 +139,20 @@ func getCategory(ctx context.Context, tx *Tx, id int) (*domain.Category, error) 
 		WHERE 
 			id = ?`,
 		id,
+	).Scan(
+		&category.Id,
+		&category.Name,
 	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 
 	if err != nil {
 		return nil, err
 	}
 
-	defer rows.Close()
-
-	if rows.Next() {
-		var category domain.Category
-		if err := rows.Scan(
-			&category.Id,
-			&category.Name,
-		); err != nil {
-			return nil, err
-		}
-		return &category, nil
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return nil, nil
+	return &category, nil
 }
 
 func createCategory(ctx context.Context, tx *Tx, name string) (int, error) {
