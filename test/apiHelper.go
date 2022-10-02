@@ -2,6 +2,13 @@ package test
 
 import "github.com/gadoma/rafapi/internal/domain"
 
+type GetRandomAffirmationResponse struct {
+	Status  string
+	Data    domain.RandomAffirmation
+	Count   int
+	Message string
+}
+
 type GetAffirmationsResponse struct {
 	Status  string
 	Data    []domain.Affirmation

@@ -21,8 +21,9 @@ type Server struct {
 	Addr   string
 	Domain string
 
-	AffirmationService domain.AffirmationService
-	CategoryService    domain.CategoryService
+	AffirmationService       domain.AffirmationService
+	CategoryService          domain.CategoryService
+	RandomAffirmationService domain.RandomAffirmationService
 }
 
 func NewServer() *Server {
@@ -41,6 +42,7 @@ func NewServer() *Server {
 
 	s.registerAffirmationRoutes(r)
 	s.registerCategoryRoutes(r)
+	s.registerRandomAffirmationRoutes(r)
 
 	return s
 }
