@@ -15,7 +15,7 @@ func TestApiGetAffirmations(t *testing.T) {
 	app := MustRunMain(t)
 	defer MustCloseMain(t, app)
 
-	response, err := http.Get("http://" + TestServerAddr + "/affirmations")
+	response, err := http.Get("http://" + testServerAddr + "/affirmations")
 
 	if err != nil {
 		t.Errorf("Could not send request because of %q", err)
@@ -37,7 +37,7 @@ func TestApiGetAffirmations(t *testing.T) {
 
 	if got, want := response.StatusCode, http.StatusOK; got != want {
 		t.Errorf("response.StatusCode=%v, want %v", got, want)
-	} else if got, want := result.Status, "OK"; got != want {
+	} else if got, want := result.Status, statusOk; got != want {
 		t.Errorf("result.Status=%v, want %v, message %v", got, want, result.Message)
 	} else if got, want := result.Data[0].Id, 1; got != want {
 		t.Errorf("result.Data[0].Id=%v, want %v", got, want)
@@ -54,7 +54,7 @@ func TestApiGetAffirmation(t *testing.T) {
 
 	affirmationId := 1
 
-	response, err := http.Get(fmt.Sprintf("http://%s/affirmations/%d", TestServerAddr, affirmationId))
+	response, err := http.Get(fmt.Sprintf("http://%s/affirmations/%d", testServerAddr, affirmationId))
 
 	if err != nil {
 		t.Errorf("Could not send request because of %q", err)
@@ -76,7 +76,7 @@ func TestApiGetAffirmation(t *testing.T) {
 
 	if got, want := response.StatusCode, http.StatusOK; got != want {
 		t.Errorf("response.StatusCode=%v, want %v", got, want)
-	} else if got, want := result.Status, "OK"; got != want {
+	} else if got, want := result.Status, statusOk; got != want {
 		t.Errorf("result.Status=%v, want %v, message %v", got, want, result.Message)
 	} else if got, want := result.Data.Id, 1; got != want {
 		t.Errorf("result.Data[0].Id=%v, want %v", got, want)
@@ -98,7 +98,7 @@ func TestApiGetAffirmationError(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		response, err := http.Get(fmt.Sprintf("http://%s/affirmations/%s", TestServerAddr, testCase.input))
+		response, err := http.Get(fmt.Sprintf("http://%s/affirmations/%s", testServerAddr, testCase.input))
 
 		if err != nil {
 			t.Errorf("Could not send request because of %q", err)
@@ -120,7 +120,7 @@ func TestApiGetAffirmationError(t *testing.T) {
 
 		if got, want := response.StatusCode, testCase.expected; got != want {
 			t.Errorf("response.StatusCode=%v, want %v", got, want)
-		} else if got, want := result.Status, "ERROR"; got != want {
+		} else if got, want := result.Status, statusError; got != want {
 			t.Errorf("result.Status=%v, want %v", got, want)
 		}
 	}
@@ -135,7 +135,7 @@ func TestApiCreateAffirmation(t *testing.T) {
 	payload := []byte(`{"text": "I am created.", "categoryId": 1}`)
 	bodyReader := bytes.NewReader(payload)
 
-	request, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/affirmations", TestServerAddr), bodyReader)
+	request, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/affirmations", testServerAddr), bodyReader)
 
 	if err != nil {
 		t.Errorf("Could not prepare request because of %q", err)
@@ -163,7 +163,7 @@ func TestApiCreateAffirmation(t *testing.T) {
 
 	if got, want := response.StatusCode, http.StatusOK; got != want {
 		t.Errorf("response.StatusCode=%v, want %v", got, want)
-	} else if got, want := result.Status, "OK"; got != want {
+	} else if got, want := result.Status, statusOk; got != want {
 		t.Errorf("result.Status=%v, want %v, message %v", got, want, result.Message)
 	} else if got, want := result.Data, nextAffirmationId; got != want {
 		t.Errorf("result.Data.Text=%v, want %v", got, want)
@@ -190,7 +190,7 @@ func TestApiCreateAffirmationError(t *testing.T) {
 	for _, testCase := range testCases {
 		payload := []byte(testCase.input)
 		bodyReader := bytes.NewReader(payload)
-		request, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/affirmations", TestServerAddr), bodyReader)
+		request, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/affirmations", testServerAddr), bodyReader)
 
 		if err != nil {
 			t.Errorf("Could not prepare request because of %q", err)
@@ -218,7 +218,7 @@ func TestApiCreateAffirmationError(t *testing.T) {
 
 		if got, want := response.StatusCode, testCase.expected; got != want {
 			t.Errorf("response.StatusCode=%v, want %v", got, want)
-		} else if got, want := result.Status, "ERROR"; got != want {
+		} else if got, want := result.Status, statusError; got != want {
 			t.Errorf("result.Status=%v, want %v", got, want)
 		}
 	}
@@ -232,7 +232,7 @@ func TestApiUpdateAffirmation(t *testing.T) {
 	payload := []byte(`{"text": "I am updated.", "categoryId": 1}`)
 	bodyReader := bytes.NewReader(payload)
 
-	request, err := http.NewRequest(http.MethodPut, fmt.Sprintf("http://%s/affirmations/%d", TestServerAddr, affirmationId), bodyReader)
+	request, err := http.NewRequest(http.MethodPut, fmt.Sprintf("http://%s/affirmations/%d", testServerAddr, affirmationId), bodyReader)
 
 	if err != nil {
 		t.Errorf("Could not prepare request because of %q", err)
@@ -260,7 +260,7 @@ func TestApiUpdateAffirmation(t *testing.T) {
 
 	if got, want := response.StatusCode, http.StatusOK; got != want {
 		t.Errorf("response.StatusCode=%v, want %v", got, want)
-	} else if got, want := result.Status, "OK"; got != want {
+	} else if got, want := result.Status, statusOk; got != want {
 		t.Errorf("result.Status=%v, want %v, message %v", got, want, result.Message)
 	} else if got, want := len(result.Data), 0; got != want {
 		t.Errorf("len(result.Data)=%v, want %v", got, want)
@@ -289,7 +289,7 @@ func TestApiUpdateAffirmationError(t *testing.T) {
 	for _, testCase := range testCases {
 		payload := []byte(testCase.input)
 		bodyReader := bytes.NewReader(payload)
-		request, err := http.NewRequest(http.MethodPut, fmt.Sprintf("http://%s/affirmations/%d", TestServerAddr, affirmationId), bodyReader)
+		request, err := http.NewRequest(http.MethodPut, fmt.Sprintf("http://%s/affirmations/%d", testServerAddr, affirmationId), bodyReader)
 
 		if err != nil {
 			t.Errorf("Could not prepare request because of %q", err)
@@ -317,7 +317,7 @@ func TestApiUpdateAffirmationError(t *testing.T) {
 
 		if got, want := response.StatusCode, testCase.expected; got != want {
 			t.Errorf("response.StatusCode=%v, want %v", got, want)
-		} else if got, want := result.Status, "ERROR"; got != want {
+		} else if got, want := result.Status, statusError; got != want {
 			t.Errorf("result.Status=%v, want %v", got, want)
 		}
 	}
@@ -329,7 +329,7 @@ func TestApiDeleteAffirmation(t *testing.T) {
 
 	affirmationId := 1
 
-	request, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("http://%s/affirmations/%d", TestServerAddr, affirmationId), nil)
+	request, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("http://%s/affirmations/%d", testServerAddr, affirmationId), nil)
 
 	if err != nil {
 		t.Errorf("Could not prepare request because of %q", err)
@@ -357,7 +357,7 @@ func TestApiDeleteAffirmation(t *testing.T) {
 
 	if got, want := response.StatusCode, http.StatusOK; got != want {
 		t.Errorf("response.StatusCode=%v, want %v", got, want)
-	} else if got, want := result.Status, "OK"; got != want {
+	} else if got, want := result.Status, statusOk; got != want {
 		t.Errorf("result.Status=%v, want %v, message %v", got, want, result.Message)
 	} else if got, want := len(result.Data), 0; got != want {
 		t.Errorf("len(result.Data)=%v, want %v", got, want)
@@ -370,7 +370,7 @@ func TestApiDeleteAffirmationError(t *testing.T) {
 	app := MustRunMain(t)
 	defer MustCloseMain(t, app)
 
-	request, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("http://%s/affirmations/92233720368547758071", TestServerAddr), nil)
+	request, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("http://%s/affirmations/92233720368547758071", testServerAddr), nil)
 
 	if err != nil {
 		t.Errorf("Could not prepare request because of %q", err)
@@ -398,7 +398,7 @@ func TestApiDeleteAffirmationError(t *testing.T) {
 
 	if got, want := response.StatusCode, http.StatusBadRequest; got != want {
 		t.Errorf("response.StatusCode=%v, want %v", got, want)
-	} else if got, want := result.Status, "ERROR"; got != want {
+	} else if got, want := result.Status, statusError; got != want {
 		t.Errorf("result.Status=%v, want %v", got, want)
 	}
 }

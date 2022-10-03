@@ -16,7 +16,7 @@ func TestApiGetRandomAffirmation(t *testing.T) {
 
 	categoryIds := []int{1, 2}
 
-	response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%d&categoryIds=%d", TestServerAddr, categoryIds[0], categoryIds[1]))
+	response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%d&categoryIds=%d", testServerAddr, categoryIds[0], categoryIds[1]))
 
 	if err != nil {
 		t.Errorf("Could not send request because of %q", err)
@@ -38,7 +38,7 @@ func TestApiGetRandomAffirmation(t *testing.T) {
 
 	if got, want := response.StatusCode, http.StatusOK; got != want {
 		t.Errorf("response.StatusCode=%v, want %v", got, want)
-	} else if got, want := result.Status, "OK"; got != want {
+	} else if got, want := result.Status, statusOk; got != want {
 		t.Errorf("result.Status=%v, want %v, message %v", got, want, result.Message)
 	} else if result.Data.Text == "" {
 		t.Error("result.Data.Text should not be empty")
@@ -53,7 +53,7 @@ func TestApiGetRandomAffirmationEmpty(t *testing.T) {
 
 	categoryIds := []int{1000, 2000}
 
-	response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%d&categoryIds=%d", TestServerAddr, categoryIds[0], categoryIds[1]))
+	response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%d&categoryIds=%d", testServerAddr, categoryIds[0], categoryIds[1]))
 
 	if err != nil {
 		t.Errorf("Could not send request because of %q", err)
@@ -75,7 +75,7 @@ func TestApiGetRandomAffirmationEmpty(t *testing.T) {
 
 	if got, want := response.StatusCode, http.StatusOK; got != want {
 		t.Errorf("response.StatusCode=%v, want %v", got, want)
-	} else if got, want := result.Status, "OK"; got != want {
+	} else if got, want := result.Status, statusOk; got != want {
 		t.Errorf("result.Status=%v, want %v, message %v", got, want, result.Message)
 	} else if result.Data.Text != "" {
 		t.Error("result.Data.Text should be empty")
@@ -97,7 +97,7 @@ func TestApiGetRandomAffirmationError(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%s", TestServerAddr, testCase.input))
+		response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%s", testServerAddr, testCase.input))
 
 		if err != nil {
 			t.Errorf("Could not send request because of %q", err)
@@ -119,7 +119,7 @@ func TestApiGetRandomAffirmationError(t *testing.T) {
 
 		if got, want := response.StatusCode, testCase.expected; got != want {
 			t.Errorf("response.StatusCode=%v, want %v", got, want)
-		} else if got, want := result.Status, "ERROR"; got != want {
+		} else if got, want := result.Status, statusError; got != want {
 			t.Errorf("result.Status=%v, want %v", got, want)
 		}
 	}

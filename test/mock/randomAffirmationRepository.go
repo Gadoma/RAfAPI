@@ -3,7 +3,7 @@ package mock
 import (
 	"context"
 
-	"github.com/gadoma/rafapi/internal/domain"
+	"github.com/gadoma/rafapi/internal/randomAffirmation/domain"
 )
 
 var _ domain.RandomAffirmationRepository = (*RandomAffirmationRepository)(nil)

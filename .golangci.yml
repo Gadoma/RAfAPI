@@ -25,11 +25,16 @@ linters:
     - unconvert
     - unparam
     - whitespace
+    - contextcheck
+    - cyclop
+    - errorlint
+    - funlen
 
 issues:
   exclude-rules:
     - path: _test\.go
       linters:
+        - errcheck
         - gosec
         - noctx
         - unparam

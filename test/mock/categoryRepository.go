@@ -3,7 +3,7 @@ package mock
 import (
 	"context"
 
-	"github.com/gadoma/rafapi/internal/domain"
+	"github.com/gadoma/rafapi/internal/category/domain"
 )
 
 var _ domain.CategoryRepository = (*CategoryRepository)(nil)
