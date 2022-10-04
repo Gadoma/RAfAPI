@@ -3,7 +3,7 @@ info:
   title: Random Affirmations API (RAfAPI) - OpenAPI 3.0
   description: |-
     This is a sample API which offers random affirmations. The returned content gets composed of random affirmation sentences selected from the requested categories. It is possible to govern both the categories and the component affirmation sentences.
-  version: 1.0.1
+  version: 1.0.0
 servers:
   - url: http://localhost:5000
     description: Your local instance
@@ -226,14 +226,15 @@ components:
       required:
         - text
     AffirmationId:
-      type: integer
-      format: int64
-      minimum: 1
-      example: 1
+      type: string
+      format: ulid
+      minLength: 26
+      maxLength: 26
+      example: 01GEJ0CNNA3VXV1HMJCKFNCYJV
     AffirmationText:
       type: string
       minLength: 1
-      example: I am smart.
+      example: I am calm.
     AffirmationDateTime:
       type: string
       format: date-time
@@ -258,14 +259,15 @@ components:
         - createdAt
         - updatedAt
     CategoryId:
-      type: integer
-      format: int64
-      minimum: 1
-      example: 1
+      type: string
+      format: ulid
+      minLength: 26
+      maxLength: 26
+      example: 01GEJ0CR9DWN7SA1QBSJE4DVKF
     CategoryName:
       type: string
       minLength: 1
-      example: Health
+      example: Love
     Category:
       type: object
       properties:
@@ -338,10 +340,10 @@ components:
       schema:
         type: array
         items:
-          type: integer
+          $ref: "#/components/schemas/CategoryId"
         uniqueItems: true
         minItems: 1
-        example: [1, 2, 3]
+        example: [01GEJ0CRM2JW0KY2Z4R5CH4349, 01GEJ0CRYJ1AAGQZDS9BR13AKS, 01GEJ0CS926M3GV1V1HXQY13AX]
 
   requestBodies:
     AffirmationRequest:

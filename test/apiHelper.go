@@ -1,31 +1,35 @@
 package test
 
-import "github.com/gadoma/rafapi/internal/domain"
+import (
+	aff "github.com/gadoma/rafapi/internal/affirmation/domain"
+	cat "github.com/gadoma/rafapi/internal/category/domain"
+	raf "github.com/gadoma/rafapi/internal/randomAffirmation/domain"
+)
 
 type GetRandomAffirmationResponse struct {
 	Status  string
-	Data    domain.RandomAffirmation
+	Data    raf.RandomAffirmation
 	Count   int
 	Message string
 }
 
 type GetAffirmationsResponse struct {
 	Status  string
-	Data    []domain.Affirmation
+	Data    []aff.Affirmation
 	Count   int
 	Message string
 }
 
 type GetAffirmationResponse struct {
 	Status  string
-	Data    domain.Affirmation
+	Data    aff.Affirmation
 	Count   int
 	Message string
 }
 
 type CreateAffirmationResponse struct {
 	Status  string
-	Data    int
+	Data    string
 	Count   int
 	Message string
 }
@@ -46,21 +50,21 @@ type DeleteAffirmationResponse struct {
 
 type GetCategoriesResponse struct {
 	Status  string
-	Data    []domain.Category
+	Data    []cat.Category
 	Count   int
 	Message string
 }
 
 type GetCategoryResponse struct {
 	Status  string
-	Data    domain.Category
+	Data    cat.Category
 	Count   int
 	Message string
 }
 
 type CreateCategoryResponse struct {
 	Status  string
-	Data    int
+	Data    string
 	Count   int
 	Message string
 }

@@ -9,16 +9,18 @@ import (
 )
 
 const (
-	TestServerAddr   = "0.0.0.0:5001"
-	TestServerDomain = "localhost"
+	testServerAddr   = "0.0.0.0:5001"
+	testServerDomain = "localhost"
+	statusOk         = "OK"
+	statusError      = "ERROR"
 )
 
 func MustRunMain(t *testing.T) *main.App {
 	test.PrepareTestDB()
 	m := main.NewApp(&main.AppConfig{
 		DbDSN:        test.GetDSN(test.TestDbDSN),
-		ServerAddr:   TestServerAddr,
-		ServerDomain: TestServerDomain,
+		ServerAddr:   testServerAddr,
+		ServerDomain: testServerDomain,
 	})
 
 	if err := m.Run(context.Background()); err != nil {

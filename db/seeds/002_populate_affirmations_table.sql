@@ -1,8 +1,8 @@
-INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('1', 'I am blessed.', '1', '2022-09-18T14:00:00Z', '2022-09-18T14:00:00Z');
-INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('2', 'I am healthy.', '2', '2022-09-18T14:00:00Z', '2022-09-18T14:00:00Z');
-INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('3', 'I am wealthy.', '3', '2022-09-18T14:00:00Z', '2022-09-18T14:00:00Z');
-INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('4', 'I am smart.', '4', '2022-09-18T14:00:00Z', '2022-09-18T14:00:00Z');
-INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('5', 'My life is wonderful.', '1', '2022-09-18T14:00:00Z', '2022-09-18T14:00:00Z');
-INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('6', 'I am agile.', '2', '2022-09-18T14:00:00Z', '2022-09-18T14:00:00Z');
-INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('7', 'My opportunities are unlimited.', '3', '2022-09-18T14:00:00Z', '2022-09-18T14:00:00Z');
-INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('8', 'I am wise.', '4', '2022-09-18T14:00:00Z', '2022-09-18T14:00:00Z');
+INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('01GEJ0CNNA3VXV1HMJCKFNCYJV', 'I am blessed.', '01GEJ0CR9DWN7SA1QBSJE4DVKF', '2022-10-04T14:00:00Z', '2022-10-04T14:00:00Z');
+INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('01GEJ0CNZ6ANKBBMFAHRGZ192G', 'I am healthy.', '01GEJ0CRM2JW0KY2Z4R5CH4349', '2022-10-04T14:00:00Z', '2022-10-04T14:00:00Z');
+INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('01GEJ0CPAEJRPTPVK1DYTVT1CH', 'I am wealthy.', '01GEJ0CRYJ1AAGQZDS9BR13AKS', '2022-10-04T14:00:00Z', '2022-10-04T14:00:00Z');
+INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('01GEJ0CPMYE65JPWPE2ZFXV8BE', 'I am smart.', '01GEJ0CS926M3GV1V1HXQY13AX', '2022-10-04T14:00:00Z', '2022-10-04T14:00:00Z');
+INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('01GEJ0CPZ3KP0274DHH4P5BMVS', 'My life is wonderful.', '01GEJ0CR9DWN7SA1QBSJE4DVKF', '2022-10-04T14:00:00Z', '2022-10-04T14:00:00Z');
+INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('01GEJ0CQ9WVWYDWD4FFN87Q88Y', 'I am agile.', '01GEJ0CRM2JW0KY2Z4R5CH4349', '2022-10-04T14:00:00Z', '2022-10-04T14:00:00Z');
+INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('01GEJ0CQN9E23Z0CXA25AC5BBT', 'My opportunities are unlimited.', '01GEJ0CRYJ1AAGQZDS9BR13AKS', '2022-10-04T14:00:00Z', '2022-10-04T14:00:00Z');
+INSERT INTO "main"."affirmations" ("id", "text", "category_id", "created_at", "updated_at") VALUES ('01GEJ0CQZ6VZS2S67NS4TSEQFA', 'I am wise.', '01GEJ0CS926M3GV1V1HXQY13AX', '2022-10-04T14:00:00Z', '2022-10-04T14:00:00Z');

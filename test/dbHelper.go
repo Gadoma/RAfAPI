@@ -5,15 +5,32 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"testing"
+
+	"github.com/gadoma/rafapi/internal/common/infrastructure/database"
 )
 
 const (
-	FixtureDbDSN = "db_test.dist.sqlite"
+	fixtureDbDSN = "db_test.dist.sqlite"
 	TestDbDSN    = "db_test.sqlite"
 )
 
+func MustOpenDB(t *testing.T) *database.DB {
+	db := database.NewDB(GetDSN(TestDbDSN))
+	if err := db.Open(); err != nil {
+		t.Fatal(err)
+	}
+	return db
+}
+
+func MustCloseDB(t *testing.T, db *database.DB) {
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func PrepareTestDB() error {
-	in, err := os.Open(GetDSN(FixtureDbDSN))
+	in, err := os.Open(GetDSN(fixtureDbDSN))
 	if err != nil {
 		return err
 	}
