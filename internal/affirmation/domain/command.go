@@ -4,21 +4,6 @@ import (
 	"github.com/oklog/ulid/v2"
 )
 
-// type RafapiULID ulid.ULID
-
-// func (r *RafapiULID) UnmarshalJson(b []byte) error {
-// 	id, err := ulid.Parse(string(b[:]))
-// 	if err != nil {
-// 		return err
-// 	}
-// 	*r = RafapiULID(id)
-// 	return nil
-// }
-
-// func (r *RafapiULID) MarshalJson(r RafapiULID) ([]byte, error) {
-
-// }
-
 type CreateAffirmationCommand struct {
 	Id         ulid.ULID
 	CategoryId ulid.ULID `json:"categoryId"`
