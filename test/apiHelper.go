@@ -29,7 +29,7 @@ type GetAffirmationResponse struct {
 
 type CreateAffirmationResponse struct {
 	Status  string
-	Data    int
+	Data    string
 	Count   int
 	Message string
 }
@@ -64,7 +64,7 @@ type GetCategoryResponse struct {
 
 type CreateCategoryResponse struct {
 	Status  string
-	Data    int
+	Data    string
 	Count   int
 	Message string
 }

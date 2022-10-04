@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	FixtureDbDSN = "db_test.dist.sqlite"
+	fixtureDbDSN = "db_test.dist.sqlite"
 	TestDbDSN    = "db_test.sqlite"
 )
 
@@ -30,7 +30,7 @@ func MustCloseDB(t *testing.T, db *database.DB) {
 }
 
 func PrepareTestDB() error {
-	in, err := os.Open(GetDSN(FixtureDbDSN))
+	in, err := os.Open(GetDSN(fixtureDbDSN))
 	if err != nil {
 		return err
 	}

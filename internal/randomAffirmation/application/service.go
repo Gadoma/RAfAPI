@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gadoma/rafapi/internal/randomAffirmation/domain"
+	"github.com/oklog/ulid/v2"
 )
 
 var _ domain.RandomAffirmationService = (*RandomAffirmationService)(nil)
@@ -18,11 +19,11 @@ func NewRandomAffirmationService(repo domain.RandomAffirmationRepository) *Rando
 	return &RandomAffirmationService{repo: repo}
 }
 
-func (s *RandomAffirmationService) GetRandomAffirmation(ctx context.Context, categoryIds []int) (*domain.RandomAffirmation, error) {
+func (s *RandomAffirmationService) GetRandomAffirmation(ctx context.Context, categoryIds []ulid.ULID) (*domain.RandomAffirmation, error) {
 	elements, err := s.repo.GetRandomAffirmations(ctx, categoryIds)
 
 	if err != nil {
-		return nil, fmt.Errorf("there was an error getting all RandomAffirmations: %w", err)
+		return nil, fmt.Errorf("an error occurred while getting all RandomAffirmations: %w", err)
 	}
 
 	stringElements := func(items []*domain.RandomAffirmation) []string {

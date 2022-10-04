@@ -26,9 +26,9 @@ func NewAffirmationController(service domain.AffirmationService, responder Affir
 func (c *AffirmationController) RegisterAffirmationRoutes(r *mux.Router) {
 	r.HandleFunc("/affirmations", c.handleGetAffirmations).Methods("GET").Name("getAffirmations")
 	r.HandleFunc("/affirmations", c.handleCreateAffirmation).Methods("POST").Name("createAffirmation")
-	r.HandleFunc("/affirmations/{affirmationId:[0-9]+}", c.handleGetAffirmation).Methods("GET").Name("getAffirmation")
-	r.HandleFunc("/affirmations/{affirmationId:[0-9]+}", c.handleUpdateAffirmation).Methods("PUT").Name("updateAffirmation")
-	r.HandleFunc("/affirmations/{affirmationId:[0-9]+}", c.handleDeleteAffirmation).Methods("DELETE").Name("deleteAffirmation")
+	r.HandleFunc("/affirmations/{affirmationId:[0-7][0-9A-HJKMNP-TV-Z]{25}}", c.handleGetAffirmation).Methods("GET").Name("getAffirmation")
+	r.HandleFunc("/affirmations/{affirmationId:[0-7][0-9A-HJKMNP-TV-Z]{25}}", c.handleUpdateAffirmation).Methods("PUT").Name("updateAffirmation")
+	r.HandleFunc("/affirmations/{affirmationId:[0-7][0-9A-HJKMNP-TV-Z]{25}}", c.handleDeleteAffirmation).Methods("DELETE").Name("deleteAffirmation")
 }
 
 func (c *AffirmationController) handleGetAffirmations(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +50,7 @@ func (c *AffirmationController) handleGetAffirmation(w http.ResponseWriter, r *h
 		return
 	}
 
-	affirmations, err := c.service.GetAffirmation(r.Context(), id)
+	affirmations, err := c.service.GetAffirmation(r.Context(), *id)
 
 	if errors.Is(err, common.ErrorResourceNotFound) {
 		c.responder.RespondErrorNotFound(w)
@@ -66,16 +66,16 @@ func (c *AffirmationController) handleGetAffirmation(w http.ResponseWriter, r *h
 }
 
 func (c *AffirmationController) handleCreateAffirmation(w http.ResponseWriter, r *http.Request) {
-	au, err := c.reqHandler.getAffirmationUpdate(r)
+	cac, err := c.reqHandler.getCreateAffirmationCommand(r)
 
 	if err != nil {
 		c.responder.RespondError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	id, err := c.service.CreateAffirmation(r.Context(), au)
+	id, err := c.service.CreateAffirmation(r.Context(), cac)
 
-	if errors.Is(err, domain.ErrorAffirmationUpdateInvalidCategoryId) || errors.Is(err, domain.ErrorAffirmationUpdateInvalidText) {
+	if errors.Is(err, domain.ErrorCreateAffirmationCommandInvalidId) || errors.Is(err, domain.ErrorCreateAffirmationCommandInvalidCategoryId) || errors.Is(err, domain.ErrorCreateAffirmationCommandInvalidText) {
 		c.responder.RespondError(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
@@ -96,16 +96,16 @@ func (c *AffirmationController) handleUpdateAffirmation(w http.ResponseWriter, r
 		return
 	}
 
-	au, err := c.reqHandler.getAffirmationUpdate(r)
+	uac, err := c.reqHandler.getUpdateAffirmationCommand(r)
 
 	if err != nil {
 		c.responder.RespondError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = c.service.UpdateAffirmation(r.Context(), id, au)
+	err = c.service.UpdateAffirmation(r.Context(), *id, uac)
 
-	if errors.Is(err, domain.ErrorAffirmationUpdateInvalidCategoryId) || errors.Is(err, domain.ErrorAffirmationUpdateInvalidText) {
+	if errors.Is(err, domain.ErrorUpdateAffirmationCommandInvalidCategoryId) || errors.Is(err, domain.ErrorUpdateAffirmationCommandInvalidText) {
 		c.responder.RespondError(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
@@ -126,7 +126,7 @@ func (c *AffirmationController) handleDeleteAffirmation(w http.ResponseWriter, r
 		return
 	}
 
-	err = c.service.DeleteAffirmation(r.Context(), id)
+	err = c.service.DeleteAffirmation(r.Context(), *id)
 
 	if err != nil {
 		c.responder.RespondError(w, err.Error(), http.StatusInternalServerError)

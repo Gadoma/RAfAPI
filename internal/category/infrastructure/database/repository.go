@@ -7,6 +7,7 @@ import (
 
 	"github.com/gadoma/rafapi/internal/category/domain"
 	"github.com/gadoma/rafapi/internal/common/infrastructure/database"
+	"github.com/oklog/ulid/v2"
 )
 
 var _ domain.CategoryRepository = (*CategoryRepository)(nil)
@@ -29,7 +30,7 @@ func (r *CategoryRepository) GetCategories(ctx context.Context) ([]*domain.Categ
 	return getCategories(ctx, tx)
 }
 
-func (r *CategoryRepository) GetCategory(ctx context.Context, id int) (*domain.Category, error) {
+func (r *CategoryRepository) GetCategory(ctx context.Context, id ulid.ULID) (*domain.Category, error) {
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return nil, err
@@ -39,32 +40,16 @@ func (r *CategoryRepository) GetCategory(ctx context.Context, id int) (*domain.C
 	return getCategory(ctx, tx, id)
 }
 
-func (r *CategoryRepository) CreateCategory(ctx context.Context, cu *domain.CategoryUpdate) (int, error) {
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return 0, err
-	}
-	defer tx.Rollback()
-
-	id, err := createCategory(ctx, tx, cu.Name)
-
-	if err != nil {
-		return 0, err
-	}
-
-	tx.Commit()
-
-	return id, nil
-}
-
-func (r *CategoryRepository) UpdateCategory(ctx context.Context, id int, cu *domain.CategoryUpdate) error {
+func (r *CategoryRepository) CreateCategory(ctx context.Context, ccc *domain.CreateCategoryCommand) error {
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback()
 
-	if err := updateCategory(ctx, tx, id, cu.Name); err != nil {
+	err = createCategory(ctx, tx, ccc.Id, ccc.Name)
+
+	if err != nil {
 		return err
 	}
 
@@ -73,7 +58,23 @@ func (r *CategoryRepository) UpdateCategory(ctx context.Context, id int, cu *dom
 	return nil
 }
 
-func (r *CategoryRepository) DeleteCategory(ctx context.Context, id int) error {
+func (r *CategoryRepository) UpdateCategory(ctx context.Context, id ulid.ULID, ucc *domain.UpdateCategoryCommand) error {
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if err := updateCategory(ctx, tx, id, ucc.Name); err != nil {
+		return err
+	}
+
+	tx.Commit()
+
+	return nil
+}
+
+func (r *CategoryRepository) DeleteCategory(ctx context.Context, id ulid.ULID) error {
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -129,7 +130,7 @@ func getCategories(ctx context.Context, tx *database.Tx) ([]*domain.Category, in
 	return categories, n, nil
 }
 
-func getCategory(ctx context.Context, tx *database.Tx, id int) (*domain.Category, error) {
+func getCategory(ctx context.Context, tx *database.Tx, id ulid.ULID) (*domain.Category, error) {
 	var category domain.Category
 
 	err := tx.QueryRowContext(ctx,
@@ -140,7 +141,7 @@ func getCategory(ctx context.Context, tx *database.Tx, id int) (*domain.Category
 			categories
 		WHERE 
 			id = ?`,
-		id,
+		id.String(),
 	).Scan(
 		&category.Id,
 		&category.Name,
@@ -150,39 +151,32 @@ func getCategory(ctx context.Context, tx *database.Tx, id int) (*domain.Category
 		return nil, nil
 	}
 
-	if err != nil {
-		return nil, err
-	}
-
 	return &category, nil
 }
 
-func createCategory(ctx context.Context, tx *database.Tx, name string) (int, error) {
-	result, err := tx.ExecContext(ctx,
+func createCategory(ctx context.Context, tx *database.Tx, id ulid.ULID, name string) error {
+	_, err := tx.ExecContext(ctx,
 		`INSERT INTO 
 		categories(
+			id,
 			name
 		)
 		VALUES(
+			?, 
 			?
 		)`,
+		id.String(),
 		name,
 	)
 
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	id, err := result.LastInsertId()
-
-	if err != nil {
-		return 0, err
-	}
-
-	return int(id), nil
+	return nil
 }
 
-func updateCategory(ctx context.Context, tx *database.Tx, id int, name string) error {
+func updateCategory(ctx context.Context, tx *database.Tx, id ulid.ULID, name string) error {
 	if _, err := tx.ExecContext(ctx,
 		`UPDATE 
 			categories 
@@ -192,7 +186,7 @@ func updateCategory(ctx context.Context, tx *database.Tx, id int, name string) e
 			id = ?	
 		`,
 		name,
-		id,
+		id.String(),
 	); err != nil {
 		return err
 	}
@@ -200,14 +194,14 @@ func updateCategory(ctx context.Context, tx *database.Tx, id int, name string) e
 	return nil
 }
 
-func deleteCategory(ctx context.Context, tx *database.Tx, id int) error {
+func deleteCategory(ctx context.Context, tx *database.Tx, id ulid.ULID) error {
 	if _, err := tx.ExecContext(ctx,
 		`DELETE FROM 
 			categories 
 		WHERE 
 			id = ?
 		`,
-		id,
+		id.String(),
 	); err != nil {
 		return err
 	}

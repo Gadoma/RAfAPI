@@ -8,6 +8,7 @@ import (
 	"github.com/gadoma/rafapi/internal/randomAffirmation/application"
 	"github.com/gadoma/rafapi/internal/randomAffirmation/domain"
 	"github.com/gadoma/rafapi/test/mock"
+	"github.com/oklog/ulid/v2"
 )
 
 func prepareRandomAffirmationServiceTest() (
@@ -30,13 +31,13 @@ func prepareRandomAffirmationServiceTest() (
 func TestRandomAffirmationServiceGetRandomAffirmation(t *testing.T) {
 	repositoryMock, randomAffirmationStubs, ctx := prepareRandomAffirmationServiceTest()
 
-	repositoryMock.GetRandomAffirmationsFn = func(ctx context.Context, categoryIds []int) ([]*domain.RandomAffirmation, error) {
+	repositoryMock.GetRandomAffirmationsFn = func(ctx context.Context, categoryIds []ulid.ULID) ([]*domain.RandomAffirmation, error) {
 		return []*domain.RandomAffirmation{&randomAffirmationStubs[0], &randomAffirmationStubs[1]}, nil
 	}
 
 	sut := application.NewRandomAffirmationService(&repositoryMock)
 
-	result, err := sut.GetRandomAffirmation(ctx, []int{1})
+	result, err := sut.GetRandomAffirmation(ctx, []ulid.ULID{ulid.Make()})
 
 	if err != nil {
 		t.Errorf("error=%q, want nil", err)
@@ -52,13 +53,13 @@ func TestRandomAffirmationServiceGetRandomAffirmation(t *testing.T) {
 func TestRandomAffirmationServiceGetRandomAffirmationError(t *testing.T) {
 	repositoryMock, _, ctx := prepareRandomAffirmationServiceTest()
 
-	repositoryMock.GetRandomAffirmationsFn = func(ctx context.Context, categoryIds []int) ([]*domain.RandomAffirmation, error) {
+	repositoryMock.GetRandomAffirmationsFn = func(ctx context.Context, categoryIds []ulid.ULID) ([]*domain.RandomAffirmation, error) {
 		return nil, errors.New("something went wrong")
 	}
 
 	sut := application.NewRandomAffirmationService(&repositoryMock)
 
-	_, err := sut.GetRandomAffirmation(ctx, []int{1})
+	_, err := sut.GetRandomAffirmation(ctx, []ulid.ULID{ulid.Make()})
 
 	if err == nil {
 		t.Error("an error was expected")

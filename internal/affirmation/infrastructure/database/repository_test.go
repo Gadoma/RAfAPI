@@ -7,7 +7,11 @@ import (
 	"github.com/gadoma/rafapi/internal/affirmation/domain"
 	"github.com/gadoma/rafapi/internal/affirmation/infrastructure/database"
 	"github.com/gadoma/rafapi/test"
+	"github.com/oklog/ulid/v2"
 )
+
+var affirmationIdString string = "01GEJ0CNNA3VXV1HMJCKFNCYJV"
+var categoryIdString string = "01GEJ0CRM2JW0KY2Z4R5CH4349"
 
 func TestAffirmationRepositoryGetAffirmations(t *testing.T) {
 	test.PrepareTestDB()
@@ -21,7 +25,7 @@ func TestAffirmationRepositoryGetAffirmations(t *testing.T) {
 
 	if a, n, err := s.GetAffirmations(ctx); err != nil {
 		t.Error(err)
-	} else if got, want := a[0].Id, 1; got != want {
+	} else if got, want := a[0].Id.String(), affirmationIdString; got != want {
 		t.Errorf("a[0].Id=%v, want %v", got, want)
 	} else if got, want := len(a), 8; got != want {
 		t.Errorf("len=%v, want %v", got, want)
@@ -40,9 +44,10 @@ func TestAffirmationRepositoryGetAffirmation(t *testing.T) {
 
 	ctx := context.Background()
 
-	if a, err := s.GetAffirmation(ctx, 1); err != nil {
+	id, _ := ulid.Parse(affirmationIdString)
+	if a, err := s.GetAffirmation(ctx, id); err != nil {
 		t.Error(err)
-	} else if got, want := a.Id, 1; got != want {
+	} else if got, want := a.Id, id; got != want {
 		t.Errorf("Id=%v, want %v", got, want)
 	}
 }
@@ -53,34 +58,38 @@ func TestAffirmationRepositoryCreateAffirmation(t *testing.T) {
 	defer test.CleanupTestDB()
 	defer test.MustCloseDB(t, db)
 
+	newAffirmationId := ulid.Make()
 	newAffirmationText := "I am fantastic."
-	newAffirmationCategoryId := 2
+	newAffirmationCategoryId, _ := ulid.Parse(categoryIdString)
 
 	s := database.NewAffirmationRepository(db)
 
 	ctx := context.Background()
 
-	au := &domain.AffirmationUpdate{
+	cac := &domain.CreateAffirmationCommand{
+		Id:         newAffirmationId,
 		Text:       newAffirmationText,
 		CategoryId: newAffirmationCategoryId,
 	}
 
-	id, err := s.CreateAffirmation(ctx, au)
+	err := s.CreateAffirmation(ctx, cac)
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	a, err := s.GetAffirmation(ctx, id)
+	a, err := s.GetAffirmation(ctx, newAffirmationId)
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	if got, want := a.Text, newAffirmationText; got != want {
+	if got, want := a.Id, newAffirmationId; got != want {
+		t.Errorf("Id=%v, want %v", got, want)
+	} else if got, want := a.Text, newAffirmationText; got != want {
 		t.Errorf("Text=%v, want %v", got, want)
 	} else if got, want := a.CategoryId, newAffirmationCategoryId; got != want {
-		t.Errorf("Text=%v, want %v", got, want)
+		t.Errorf("CategoryId=%v, want %v", got, want)
 	}
 }
 
@@ -90,20 +99,21 @@ func TestAffirmationRepositoryUpdateAffirmation(t *testing.T) {
 	defer test.CleanupTestDB()
 	defer test.MustCloseDB(t, db)
 
-	affirmationId := 1
+	affirmationId, _ := ulid.Parse(affirmationIdString)
+
 	newAffirmationText := "I am fantastic."
-	newAffirmationCategoryId := 2
+	newAffirmationCategoryId, _ := ulid.Parse(categoryIdString)
 
 	s := database.NewAffirmationRepository(db)
 
 	ctx := context.Background()
 
-	au := &domain.AffirmationUpdate{
+	uac := &domain.UpdateAffirmationCommand{
 		Text:       newAffirmationText,
 		CategoryId: newAffirmationCategoryId,
 	}
 
-	err := s.UpdateAffirmation(ctx, affirmationId, au)
+	err := s.UpdateAffirmation(ctx, affirmationId, uac)
 
 	if err != nil {
 		t.Error(err)
@@ -118,7 +128,7 @@ func TestAffirmationRepositoryUpdateAffirmation(t *testing.T) {
 	if got, want := a.Text, newAffirmationText; got != want {
 		t.Errorf("Text=%v, want %v", got, want)
 	} else if got, want := a.CategoryId, newAffirmationCategoryId; got != want {
-		t.Errorf("Text=%v, want %v", got, want)
+		t.Errorf("CategoryId=%v, want %v", got, want)
 	}
 }
 
@@ -128,7 +138,7 @@ func TestAffirmationRepositoryDeleteAffirmation(t *testing.T) {
 	defer test.CleanupTestDB()
 	defer test.MustCloseDB(t, db)
 
-	affirmationId := 1
+	affirmationId, _ := ulid.Parse(affirmationIdString)
 
 	s := database.NewAffirmationRepository(db)
 

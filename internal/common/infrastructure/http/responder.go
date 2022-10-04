@@ -47,7 +47,7 @@ func (r *Responder) RespondError(w http.ResponseWriter, message string, httpStat
 		Status:  statusError,
 		Message: message,
 	}); err != nil {
-		panic(fmt.Sprintf("There was an error returning an error response: %q", err))
+		panic(fmt.Sprintf("an error occured while returning an error response: %q", err))
 	}
 }
 
@@ -59,6 +59,6 @@ func (r *Responder) respondSuccess(w http.ResponseWriter, data any, n int) {
 		Data:   data,
 		N:      n,
 	}); err != nil {
-		panic(fmt.Sprintf("There was an error returning a success response: %q", err))
+		panic(fmt.Sprintf("an error occured while returning a success response: %q", err))
 	}
 }

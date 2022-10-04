@@ -6,6 +6,7 @@ import (
 
 	"github.com/gadoma/rafapi/internal/randomAffirmation/infrastructure/database"
 	"github.com/gadoma/rafapi/test"
+	"github.com/oklog/ulid/v2"
 )
 
 func TestRandomAffirmationRepositoryGetRandomAffirmationsContent(t *testing.T) {
@@ -18,7 +19,9 @@ func TestRandomAffirmationRepositoryGetRandomAffirmationsContent(t *testing.T) {
 
 	ctx := context.Background()
 
-	categoryIds := []int{1}
+	id, _ := ulid.Parse("01GEJ0CR9DWN7SA1QBSJE4DVKF")
+
+	categoryIds := []ulid.ULID{id}
 
 	if a, err := s.GetRandomAffirmations(ctx, categoryIds); err != nil {
 		t.Error(err)
@@ -37,7 +40,11 @@ func TestRandomAffirmationRepositoryGetRandomAffirmationsLenght(t *testing.T) {
 
 	ctx := context.Background()
 
-	categoryIds := []int{1, 2, 3}
+	id1, _ := ulid.Parse("01GEJ0CR9DWN7SA1QBSJE4DVKF")
+	id2, _ := ulid.Parse("01GEJ0CRM2JW0KY2Z4R5CH4349")
+	id3, _ := ulid.Parse("01GEJ0CRYJ1AAGQZDS9BR13AKS")
+
+	categoryIds := []ulid.ULID{id1, id2, id3}
 
 	if a, err := s.GetRandomAffirmations(ctx, categoryIds); err != nil {
 		t.Error(err)

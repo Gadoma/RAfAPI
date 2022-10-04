@@ -26,9 +26,9 @@ func NewCategoryController(service domain.CategoryService, responder CategoryRes
 func (c *CategoryController) RegisterCategoryRoutes(r *mux.Router) {
 	r.HandleFunc("/categories", c.handleGetCategories).Methods("GET").Name("getCategories")
 	r.HandleFunc("/categories", c.handleCreateCategory).Methods("POST").Name("createCategory")
-	r.HandleFunc("/categories/{categoryId:[0-9]+}", c.handleGetCategory).Methods("GET").Name("getCategory")
-	r.HandleFunc("/categories/{categoryId:[0-9]+}", c.handleUpdateCategory).Methods("PUT").Name("updateCategory")
-	r.HandleFunc("/categories/{categoryId:[0-9]+}", c.handleDeleteCategory).Methods("DELETE").Name("deleteCategory")
+	r.HandleFunc("/categories/{categoryId:[0-7][0-9A-HJKMNP-TV-Z]{25}}", c.handleGetCategory).Methods("GET").Name("getCategory")
+	r.HandleFunc("/categories/{categoryId:[0-7][0-9A-HJKMNP-TV-Z]{25}}", c.handleUpdateCategory).Methods("PUT").Name("updateCategory")
+	r.HandleFunc("/categories/{categoryId:[0-7][0-9A-HJKMNP-TV-Z]{25}}", c.handleDeleteCategory).Methods("DELETE").Name("deleteCategory")
 }
 
 func (c *CategoryController) handleGetCategories(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +50,7 @@ func (c *CategoryController) handleGetCategory(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	categories, err := c.service.GetCategory(r.Context(), id)
+	categories, err := c.service.GetCategory(r.Context(), *id)
 
 	if errors.Is(err, common.ErrorResourceNotFound) {
 		c.responder.RespondErrorNotFound(w)
@@ -66,16 +66,16 @@ func (c *CategoryController) handleGetCategory(w http.ResponseWriter, r *http.Re
 }
 
 func (c *CategoryController) handleCreateCategory(w http.ResponseWriter, r *http.Request) {
-	au, err := c.reqHandler.getCategoryUpdate(r)
+	ccc, err := c.reqHandler.getCreateCategoryCommand(r)
 
 	if err != nil {
 		c.responder.RespondError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	id, err := c.service.CreateCategory(r.Context(), au)
+	id, err := c.service.CreateCategory(r.Context(), ccc)
 
-	if errors.Is(err, domain.ErrorCategoryUpdateInvalidName) {
+	if errors.Is(err, domain.ErrorCreateCategoryCommandInvalidId) || errors.Is(err, domain.ErrorCreateCategoryCommandInvalidName) {
 		c.responder.RespondError(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
@@ -96,16 +96,16 @@ func (c *CategoryController) handleUpdateCategory(w http.ResponseWriter, r *http
 		return
 	}
 
-	au, err := c.reqHandler.getCategoryUpdate(r)
+	ccc, err := c.reqHandler.getUpdateCategoryCommand(r)
 
 	if err != nil {
 		c.responder.RespondError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = c.service.UpdateCategory(r.Context(), id, au)
+	err = c.service.UpdateCategory(r.Context(), *id, ccc)
 
-	if errors.Is(err, domain.ErrorCategoryUpdateInvalidName) {
+	if errors.Is(err, domain.ErrorUpdateCategoryCommandInvalidName) {
 		c.responder.RespondError(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
@@ -126,7 +126,7 @@ func (c *CategoryController) handleDeleteCategory(w http.ResponseWriter, r *http
 		return
 	}
 
-	err = c.service.DeleteCategory(r.Context(), id)
+	err = c.service.DeleteCategory(r.Context(), *id)
 
 	if err != nil {
 		c.responder.RespondError(w, err.Error(), http.StatusInternalServerError)

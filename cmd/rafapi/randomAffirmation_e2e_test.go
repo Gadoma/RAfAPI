@@ -8,15 +8,17 @@ import (
 	"testing"
 
 	"github.com/gadoma/rafapi/test"
+	"github.com/oklog/ulid/v2"
 )
 
 func TestApiGetRandomAffirmation(t *testing.T) {
 	app := MustRunMain(t)
 	defer MustCloseMain(t, app)
 
-	categoryIds := []int{1, 2}
+	categoryId1, _ := ulid.Parse("01GEJ0CR9DWN7SA1QBSJE4DVKF")
+	categoryId2, _ := ulid.Parse("01GEJ0CRM2JW0KY2Z4R5CH4349")
 
-	response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%d&categoryIds=%d", testServerAddr, categoryIds[0], categoryIds[1]))
+	response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%s&categoryIds=%s", testServerAddr, categoryId1, categoryId2))
 
 	if err != nil {
 		t.Errorf("Could not send request because of %q", err)
@@ -51,9 +53,10 @@ func TestApiGetRandomAffirmationEmpty(t *testing.T) {
 	app := MustRunMain(t)
 	defer MustCloseMain(t, app)
 
-	categoryIds := []int{1000, 2000}
+	categoryId1 := ulid.Make()
+	categoryId2 := ulid.Make()
 
-	response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%d&categoryIds=%d", testServerAddr, categoryIds[0], categoryIds[1]))
+	response, err := http.Get(fmt.Sprintf("http://%s/random_affirmation?categoryIds=%s&categoryIds=%s", testServerAddr, categoryId1, categoryId2))
 
 	if err != nil {
 		t.Errorf("Could not send request because of %q", err)

@@ -1,7 +1,7 @@
 CREATE TABLE "categories" (
-	"id"	INTEGER NOT NULL,
+	"id"	TEXT NOT NULL,
 	"name"	TEXT NOT NULL,
-	PRIMARY KEY("id" AUTOINCREMENT)
+	PRIMARY KEY("id")
 );
 
 CREATE UNIQUE INDEX "idx_uniq_name" ON "categories" ( "name" );

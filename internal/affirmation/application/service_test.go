@@ -10,35 +10,38 @@ import (
 	"github.com/gadoma/rafapi/internal/affirmation/domain"
 	common "github.com/gadoma/rafapi/internal/common/domain"
 	"github.com/gadoma/rafapi/test/mock"
+	"github.com/oklog/ulid/v2"
 )
 
-func prepareAffirmationServiceTest() (
-	repositoryMock mock.AffirmationRepository,
-	affirmationStub domain.Affirmation,
-	affirmationUpdateStub domain.AffirmationUpdate,
-	ctx context.Context) {
-	repositoryMock = mock.AffirmationRepository{}
-
-	affirmationStub = domain.Affirmation{
-		Id:         1,
-		CategoryId: 1,
+func getAffirmationEntityStub() domain.Affirmation {
+	return domain.Affirmation{
+		Id:         ulid.Make(),
+		CategoryId: ulid.Make(),
 		Text:       "I am a stub.",
 		CreatedAt:  time.Now().UTC(),
 		UpdatedAt:  time.Now().UTC(),
 	}
+}
 
-	affirmationUpdateStub = domain.AffirmationUpdate{
-		CategoryId: 2,
-		Text:       "I am another stub.",
+func getCreateAffirmationCommandStub() domain.CreateAffirmationCommand {
+	return domain.CreateAffirmationCommand{
+		Id:         ulid.Make(),
+		CategoryId: ulid.Make(),
+		Text:       "I am a create stub.",
 	}
+}
 
-	ctx = context.Background()
-
-	return
+func getUpdateAffirmationCommandStub() domain.UpdateAffirmationCommand {
+	return domain.UpdateAffirmationCommand{
+		CategoryId: ulid.Make(),
+		Text:       "I am an update stub.",
+	}
 }
 
 func TestAffirmationServiceGetAffirmations(t *testing.T) {
-	repositoryMock, affirmationStub, _, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	affirmationStub := getAffirmationEntityStub()
 
 	repositoryMock.GetAffirmationsFn = func(ctx context.Context) ([]*domain.Affirmation, int, error) {
 		return []*domain.Affirmation{&affirmationStub}, 1, nil
@@ -62,7 +65,8 @@ func TestAffirmationServiceGetAffirmations(t *testing.T) {
 }
 
 func TestAffirmationServiceGetAffirmationsError(t *testing.T) {
-	repositoryMock, _, _, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
 
 	repositoryMock.GetAffirmationsFn = func(ctx context.Context) ([]*domain.Affirmation, int, error) {
 		return nil, 0, errors.New("something went wrong")
@@ -78,9 +82,11 @@ func TestAffirmationServiceGetAffirmationsError(t *testing.T) {
 }
 
 func TestAffirmationServiceGetAffirmation(t *testing.T) {
-	repositoryMock, affirmationStub, _, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	affirmationStub := getAffirmationEntityStub()
 
-	repositoryMock.GetAffirmationFn = func(ctx context.Context, id int) (*domain.Affirmation, error) {
+	repositoryMock.GetAffirmationFn = func(ctx context.Context, id ulid.ULID) (*domain.Affirmation, error) {
 		return &affirmationStub, nil
 	}
 
@@ -100,9 +106,11 @@ func TestAffirmationServiceGetAffirmation(t *testing.T) {
 }
 
 func TestAffirmationServiceGetAffirmationNotFound(t *testing.T) {
-	repositoryMock, affirmationStub, _, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	affirmationStub := getAffirmationEntityStub()
 
-	repositoryMock.GetAffirmationFn = func(ctx context.Context, id int) (*domain.Affirmation, error) {
+	repositoryMock.GetAffirmationFn = func(ctx context.Context, id ulid.ULID) (*domain.Affirmation, error) {
 		return nil, nil
 	}
 
@@ -116,9 +124,11 @@ func TestAffirmationServiceGetAffirmationNotFound(t *testing.T) {
 }
 
 func TestAffirmationServiceGetAffirmationError(t *testing.T) {
-	repositoryMock, affirmationStub, _, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	affirmationStub := getAffirmationEntityStub()
 
-	repositoryMock.GetAffirmationFn = func(ctx context.Context, id int) (*domain.Affirmation, error) {
+	repositoryMock.GetAffirmationFn = func(ctx context.Context, id ulid.ULID) (*domain.Affirmation, error) {
 		return nil, errors.New("something went wrong")
 	}
 
@@ -132,49 +142,55 @@ func TestAffirmationServiceGetAffirmationError(t *testing.T) {
 }
 
 func TestAffirmationServiceCreateAffirmation(t *testing.T) {
-	repositoryMock, _, affirmationUpdateStub, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	createAffirmationStub := getCreateAffirmationCommandStub()
 
-	repositoryMock.CreateAffirmationFn = func(ctx context.Context, au *domain.AffirmationUpdate) (int, error) {
-		return 1, nil
+	repositoryMock.CreateAffirmationFn = func(ctx context.Context, cac *domain.CreateAffirmationCommand) error {
+		return nil
 	}
 
 	sut := application.NewAffirmationService(&repositoryMock)
 
-	result, err := sut.CreateAffirmation(ctx, &affirmationUpdateStub)
+	result, err := sut.CreateAffirmation(ctx, &createAffirmationStub)
 
 	if err != nil {
 		t.Errorf("error=%q, want nil", err)
 	}
 
-	if got, want := result, 1; got != want {
+	if got, want := result, &createAffirmationStub.Id; got != want {
 		t.Errorf("result=%v, want %v", got, want)
 	}
 }
 
 func TestAffirmationServiceCreateAffirmationValidationError(t *testing.T) {
-	repositoryMock, _, affirmationUpdateStub, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	createAffirmationStub := getCreateAffirmationCommandStub()
 
-	affirmationUpdateStub.Text = ""
+	createAffirmationStub.Text = ""
 
 	sut := application.NewAffirmationService(&repositoryMock)
 
-	_, err := sut.CreateAffirmation(ctx, &affirmationUpdateStub)
+	_, err := sut.CreateAffirmation(ctx, &createAffirmationStub)
 
-	if !errors.Is(err, domain.ErrorAffirmationUpdateInvalidText) {
-		t.Errorf("error=%q, want domain.ErrorAffirmationUpdateInvalidText", err)
+	if !errors.Is(err, domain.ErrorCreateAffirmationCommandInvalidText) {
+		t.Errorf("error=%q, want domain.ErrorCreateAffirmationCommandInvalidText", err)
 	}
 }
 
 func TestAffirmationServiceCreateAffirmationError(t *testing.T) {
-	repositoryMock, _, affirmationUpdateStub, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	createAffirmationStub := getCreateAffirmationCommandStub()
 
-	repositoryMock.CreateAffirmationFn = func(ctx context.Context, au *domain.AffirmationUpdate) (int, error) {
-		return 0, errors.New("something went wrong")
+	repositoryMock.CreateAffirmationFn = func(ctx context.Context, cac *domain.CreateAffirmationCommand) error {
+		return errors.New("something went wrong")
 	}
 
 	sut := application.NewAffirmationService(&repositoryMock)
 
-	_, err := sut.CreateAffirmation(ctx, &affirmationUpdateStub)
+	_, err := sut.CreateAffirmation(ctx, &createAffirmationStub)
 
 	if err == nil {
 		t.Error("an error was expected")
@@ -182,15 +198,17 @@ func TestAffirmationServiceCreateAffirmationError(t *testing.T) {
 }
 
 func TestAffirmationServiceUpdateAffirmation(t *testing.T) {
-	repositoryMock, _, affirmationUpdateStub, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	updateAffirmationStub := getUpdateAffirmationCommandStub()
 
-	repositoryMock.UpdateAffirmationFn = func(ctx context.Context, id int, au *domain.AffirmationUpdate) error {
+	repositoryMock.UpdateAffirmationFn = func(ctx context.Context, id ulid.ULID, uac *domain.UpdateAffirmationCommand) error {
 		return nil
 	}
 
 	sut := application.NewAffirmationService(&repositoryMock)
 
-	err := sut.UpdateAffirmation(ctx, 1, &affirmationUpdateStub)
+	err := sut.UpdateAffirmation(ctx, ulid.Make(), &updateAffirmationStub)
 
 	if err != nil {
 		t.Errorf("error=%q, want nil", err)
@@ -198,29 +216,33 @@ func TestAffirmationServiceUpdateAffirmation(t *testing.T) {
 }
 
 func TestAffirmationServiceUpdateAffirmationValidationError(t *testing.T) {
-	repositoryMock, _, affirmationUpdateStub, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	updateAffirmationStub := getUpdateAffirmationCommandStub()
 
-	affirmationUpdateStub.Text = ""
+	updateAffirmationStub.Text = ""
 
 	sut := application.NewAffirmationService(&repositoryMock)
 
-	err := sut.UpdateAffirmation(ctx, 1, &affirmationUpdateStub)
+	err := sut.UpdateAffirmation(ctx, ulid.Make(), &updateAffirmationStub)
 
-	if !errors.Is(err, domain.ErrorAffirmationUpdateInvalidText) {
+	if !errors.Is(err, domain.ErrorUpdateAffirmationCommandInvalidText) {
 		t.Errorf("error=%q, want domain.ErrorAffirmationUpdateInvalidText", err)
 	}
 }
 
 func TestAffirmationServiceUpdateAffirmationError(t *testing.T) {
-	repositoryMock, _, affirmationUpdateStub, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
+	updateAffirmationStub := getUpdateAffirmationCommandStub()
 
-	repositoryMock.UpdateAffirmationFn = func(ctx context.Context, id int, au *domain.AffirmationUpdate) error {
+	repositoryMock.UpdateAffirmationFn = func(ctx context.Context, id ulid.ULID, uac *domain.UpdateAffirmationCommand) error {
 		return errors.New("something went wrong")
 	}
 
 	sut := application.NewAffirmationService(&repositoryMock)
 
-	err := sut.UpdateAffirmation(ctx, 1, &affirmationUpdateStub)
+	err := sut.UpdateAffirmation(ctx, ulid.Make(), &updateAffirmationStub)
 
 	if err == nil {
 		t.Error("an error was expected")
@@ -228,15 +250,16 @@ func TestAffirmationServiceUpdateAffirmationError(t *testing.T) {
 }
 
 func TestAffirmationServiceDeleteAffirmation(t *testing.T) {
-	repositoryMock, _, _, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
 
-	repositoryMock.DeleteAffirmationFn = func(ctx context.Context, id int) error {
+	repositoryMock.DeleteAffirmationFn = func(ctx context.Context, id ulid.ULID) error {
 		return nil
 	}
 
 	sut := application.NewAffirmationService(&repositoryMock)
 
-	err := sut.DeleteAffirmation(ctx, 1)
+	err := sut.DeleteAffirmation(ctx, ulid.Make())
 
 	if err != nil {
 		t.Errorf("error=%q, want nil", err)
@@ -244,15 +267,16 @@ func TestAffirmationServiceDeleteAffirmation(t *testing.T) {
 }
 
 func TestAffirmationServiceDeleteAffirmationError(t *testing.T) {
-	repositoryMock, _, _, ctx := prepareAffirmationServiceTest()
+	repositoryMock := mock.AffirmationRepository{}
+	ctx := context.Background()
 
-	repositoryMock.DeleteAffirmationFn = func(ctx context.Context, id int) error {
+	repositoryMock.DeleteAffirmationFn = func(ctx context.Context, id ulid.ULID) error {
 		return errors.New("something went wrong")
 	}
 
 	sut := application.NewAffirmationService(&repositoryMock)
 
-	err := sut.DeleteAffirmation(ctx, 1)
+	err := sut.DeleteAffirmation(ctx, ulid.Make())
 
 	if err == nil {
 		t.Error("an error was expected")
