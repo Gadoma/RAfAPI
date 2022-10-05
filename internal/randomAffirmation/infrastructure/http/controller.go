@@ -21,7 +21,7 @@ func NewRandomAffirmationController(service domain.RandomAffirmationService, res
 	}
 }
 
-func (c *RandomAffirmationController) RegisterRandomAffirmationRoutes(r *mux.Router) {
+func (c *RandomAffirmationController) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/random_affirmation", c.handleGetRandomAffirmation).Methods("GET").Name("getRandomAffirmation")
 }
 

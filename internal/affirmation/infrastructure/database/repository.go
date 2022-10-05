@@ -54,7 +54,9 @@ func (r *AffirmationRepository) CreateAffirmation(ctx context.Context, cac *doma
 		return err
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -70,7 +72,9 @@ func (r *AffirmationRepository) UpdateAffirmation(ctx context.Context, id ulid.U
 		return err
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -86,7 +90,9 @@ func (r *AffirmationRepository) DeleteAffirmation(ctx context.Context, id ulid.U
 		return err
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return err
+	}
 
 	return nil
 }

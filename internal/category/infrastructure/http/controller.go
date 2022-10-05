@@ -23,7 +23,7 @@ func NewCategoryController(service domain.CategoryService, responder CategoryRes
 	}
 }
 
-func (c *CategoryController) RegisterCategoryRoutes(r *mux.Router) {
+func (c *CategoryController) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/categories", c.handleGetCategories).Methods("GET").Name("getCategories")
 	r.HandleFunc("/categories", c.handleCreateCategory).Methods("POST").Name("createCategory")
 	r.HandleFunc("/categories/{categoryId:[0-7][0-9A-HJKMNP-TV-Z]{25}}", c.handleGetCategory).Methods("GET").Name("getCategory")

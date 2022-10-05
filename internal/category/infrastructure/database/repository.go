@@ -53,7 +53,9 @@ func (r *CategoryRepository) CreateCategory(ctx context.Context, ccc *domain.Cre
 		return err
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -69,7 +71,9 @@ func (r *CategoryRepository) UpdateCategory(ctx context.Context, id ulid.ULID, u
 		return err
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -85,7 +89,9 @@ func (r *CategoryRepository) DeleteCategory(ctx context.Context, id ulid.ULID) e
 		return err
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return err
+	}
 
 	return nil
 }
