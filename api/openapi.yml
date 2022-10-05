@@ -110,6 +110,8 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
     delete:
@@ -123,6 +125,8 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
   /categories:
     get:
       summary: Get a list of all available categories
@@ -202,6 +206,8 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
     delete:
@@ -215,6 +221,8 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
 
 components:
   schemas:
@@ -336,7 +344,6 @@ components:
       name: categoryIds
       in: query
       description: A list of category IDs
-      required: true
       schema:
         type: array
         items:
