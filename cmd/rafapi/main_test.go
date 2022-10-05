@@ -4,7 +4,8 @@ import (
 	"context"
 	"testing"
 
-	main "github.com/gadoma/rafapi/cmd/rafapi"
+	app "github.com/gadoma/rafapi/internal/common/infrastructure"
+	commonHttp "github.com/gadoma/rafapi/internal/common/infrastructure/http"
 	"github.com/gadoma/rafapi/test"
 )
 
@@ -15,24 +16,25 @@ const (
 	statusError      = "ERROR"
 )
 
-func MustRunMain(t *testing.T) *main.App {
+func MustRunMain(t *testing.T) *app.App {
 	test.PrepareTestDB()
-	m := main.NewApp(&main.AppConfig{
+	b := commonHttp.NewBootstrap()
+	main := app.NewApp(&app.AppConfig{
 		DbDSN:        test.GetDSN(test.TestDbDSN),
 		ServerAddr:   testServerAddr,
 		ServerDomain: testServerDomain,
-	})
+	}, b)
 
-	if err := m.Run(context.Background()); err != nil {
+	if err := main.Run(context.Background()); err != nil {
 		t.Fatal(err)
 	}
 
-	return m
+	return main
 }
 
-func MustCloseMain(t *testing.T, m *main.App) {
+func MustCloseMain(t *testing.T, main *app.App) {
 	defer test.CleanupTestDB()
-	if err := m.Close(); err != nil {
+	if err := main.Halt(); err != nil {
 		t.Fatal(err)
 	}
 }

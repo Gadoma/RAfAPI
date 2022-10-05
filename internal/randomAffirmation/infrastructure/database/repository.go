@@ -33,6 +33,7 @@ func (r *RandomAffirmationRepository) GetRandomAffirmations(ctx context.Context,
 func getRandomAffirmations(ctx context.Context, tx *database.Tx, categoryIds []ulid.ULID) ([]*domain.RandomAffirmation, error) {
 	convertedIds := make([]any, 0)
 	whereCondition := ""
+	limit := "LIMIT 10"
 
 	if len(categoryIds) > 0 {
 		placeholders := make([]string, 0)
@@ -43,24 +44,27 @@ func getRandomAffirmations(ctx context.Context, tx *database.Tx, categoryIds []u
 		}
 
 		whereCondition = "WHERE category_id IN(" + strings.Join(placeholders, ",") + ")"
+		limit = ""
 	}
 
 	rows, err := tx.QueryContext(ctx,
-		fmt.Sprintf(`SELECT 
+		fmt.Sprintf(`
+		SELECT
 			ra.affirmation_text
-		FROM 
-		(    
-			SELECT  
+		FROM
+		(
+			SELECT
 				c.id as category_id, c.name, a.id, a.text as affirmation_text
-			FROM 
+			FROM
 				categories c
-			INNER JOIN 
-				affirmations a 
-			ON c.id = a.category_id 
-			ORDER BY RANDOM() 
-		) AS ra 
+			INNER JOIN
+				affirmations a
+			ON c.id = a.category_id
+			ORDER BY RANDOM()
+		) AS ra
 		%s
-		GROUP BY ra.category_id`, whereCondition),
+		GROUP BY ra.category_id
+		%s`, whereCondition, limit),
 		convertedIds...,
 	)
 
@@ -73,12 +77,9 @@ func getRandomAffirmations(ctx context.Context, tx *database.Tx, categoryIds []u
 	randomAffirmations := make([]*domain.RandomAffirmation, 0)
 	for rows.Next() {
 		var randomAffirmation domain.RandomAffirmation
-		if err := rows.Scan(
-			&randomAffirmation.Text,
-		); err != nil {
+		if err := rows.Scan(&randomAffirmation.Text); err != nil {
 			return nil, err
 		}
-
 		randomAffirmations = append(randomAffirmations, &randomAffirmation)
 	}
 

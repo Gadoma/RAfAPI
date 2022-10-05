@@ -6,10 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	httpAff "github.com/gadoma/rafapi/internal/affirmation/infrastructure/http"
-	httpCat "github.com/gadoma/rafapi/internal/category/infrastructure/http"
-	httpRaf "github.com/gadoma/rafapi/internal/randomAffirmation/infrastructure/http"
-
 	"github.com/gorilla/mux"
 )
 
@@ -24,16 +20,20 @@ type Server struct {
 	Addr   string
 	Domain string
 
-	AffirmationController       *httpAff.AffirmationController
-	CategoryController          *httpCat.CategoryController
-	RandomAffirmationController *httpRaf.RandomAffirmationController
+	controllers []Controller
 }
 
-func NewServer() *Server {
+func NewServer(controllers []Controller) *Server {
 	s := &Server{
-		server:    &http.Server{},
-		router:    mux.NewRouter(),
-		responder: NewResponder(),
+		server: &http.Server{
+			ReadTimeout:       1 * time.Second,
+			WriteTimeout:      1 * time.Second,
+			IdleTimeout:       30 * time.Second,
+			ReadHeaderTimeout: 2 * time.Second,
+		},
+		router:      mux.NewRouter(),
+		responder:   NewResponder(),
+		controllers: controllers,
 	}
 
 	s.router.Use(s.handlePanicMiddleware)
@@ -42,15 +42,17 @@ func NewServer() *Server {
 
 	s.router.NotFoundHandler = http.HandlerFunc(s.handleNotFound)
 
+	s.RegisterRoutes()
+
 	return s
 }
 
 func (s *Server) RegisterRoutes() {
 	r := s.router.PathPrefix("/").Subrouter()
 
-	s.AffirmationController.RegisterAffirmationRoutes(r)
-	s.CategoryController.RegisterCategoryRoutes(r)
-	s.RandomAffirmationController.RegisterRandomAffirmationRoutes(r)
+	for _, c := range s.controllers {
+		c.RegisterRoutes(r)
+	}
 }
 
 func (s *Server) Open() (err error) {
@@ -58,9 +60,13 @@ func (s *Server) Open() (err error) {
 		return err
 	}
 
-	go s.server.Serve(s.ln)
+	serve := func() {
+		err = s.server.Serve(s.ln)
+	}
 
-	return nil
+	go serve()
+
+	return
 }
 
 func (s *Server) Close() error {

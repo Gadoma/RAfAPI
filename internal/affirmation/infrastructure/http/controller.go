@@ -23,7 +23,7 @@ func NewAffirmationController(service domain.AffirmationService, responder Affir
 	}
 }
 
-func (c *AffirmationController) RegisterAffirmationRoutes(r *mux.Router) {
+func (c *AffirmationController) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/affirmations", c.handleGetAffirmations).Methods("GET").Name("getAffirmations")
 	r.HandleFunc("/affirmations", c.handleCreateAffirmation).Methods("POST").Name("createAffirmation")
 	r.HandleFunc("/affirmations/{affirmationId:[0-7][0-9A-HJKMNP-TV-Z]{25}}", c.handleGetAffirmation).Methods("GET").Name("getAffirmation")
