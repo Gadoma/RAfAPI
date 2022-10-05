@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/gadoma/rafapi/internal/common/infrastructure/database"
@@ -30,16 +31,22 @@ func (r *RandomAffirmationRepository) GetRandomAffirmations(ctx context.Context,
 }
 
 func getRandomAffirmations(ctx context.Context, tx *database.Tx, categoryIds []ulid.ULID) ([]*domain.RandomAffirmation, error) {
-	placeholders := make([]string, 0)
 	convertedIds := make([]any, 0)
+	whereCondition := ""
 
-	for _, i := range categoryIds {
-		convertedIds = append(convertedIds, i.String())
-		placeholders = append(placeholders, "?")
+	if len(categoryIds) > 0 {
+		placeholders := make([]string, 0)
+
+		for _, i := range categoryIds {
+			convertedIds = append(convertedIds, i.String())
+			placeholders = append(placeholders, "?")
+		}
+
+		whereCondition = "WHERE category_id IN(" + strings.Join(placeholders, ",") + ")"
 	}
 
 	rows, err := tx.QueryContext(ctx,
-		`SELECT 
+		fmt.Sprintf(`SELECT 
 			ra.affirmation_text
 		FROM 
 		(    
@@ -52,8 +59,8 @@ func getRandomAffirmations(ctx context.Context, tx *database.Tx, categoryIds []u
 			ON c.id = a.category_id 
 			ORDER BY RANDOM() 
 		) AS ra 
-		WHERE category_id IN(`+strings.Join(placeholders, ",")+`)
-		GROUP BY ra.category_id`,
+		%s
+		GROUP BY ra.category_id`, whereCondition),
 		convertedIds...,
 	)
 
