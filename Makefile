@@ -9,13 +9,13 @@ go-lint: # run linter
 	./scripts/go-lint.sh
 .PHONY: lint
 
-go-build: # compile app for Linux@AMD64 on OSX@ARM64 via MUSL
+go-build: # build app
 	./scripts/go-build.sh
 .PHONY: compile
 
-docker-run: # run container
-	./scripts/docker-run.sh
-.PHONY: build
+#docker-run: # run container
+#	./scripts/docker-run.sh
+#.PHONY: build
 
 list: # list available commands
 	@grep : ./Makefile | grep -v "grep\|.PHONY\|.DEFAULT_GOAL" | sed s/#/\\t#/
@@ -25,5 +25,5 @@ all: # test compile build and run
 	@$(MAKE) go-lint
 	@$(MAKE) go-test
 	@$(MAKE) go-build
-	@$(MAKE) docker-run
+#	@$(MAKE) docker-run
 .PHONY: all
