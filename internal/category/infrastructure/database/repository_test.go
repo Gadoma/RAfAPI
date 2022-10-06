@@ -6,11 +6,11 @@ import (
 
 	"github.com/gadoma/rafapi/internal/category/domain"
 	"github.com/gadoma/rafapi/internal/category/infrastructure/database"
-	"github.com/gadoma/rafapi/test"
+	"github.com/gadoma/rafapi/internal/common/test"
 	"github.com/oklog/ulid/v2"
 )
 
-var categoryIdString string = "01GEJ0CR9DWN7SA1QBSJE4DVKF"
+var categoryIdString = "01GEJ0CR9DWN7SA1QBSJE4DVKF"
 
 func TestCategoryRepositoryGetCategories(t *testing.T) {
 	test.PrepareTestDB()

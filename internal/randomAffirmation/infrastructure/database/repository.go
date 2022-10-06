@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"strings"
 
@@ -25,7 +26,12 @@ func (r *RandomAffirmationRepository) GetRandomAffirmations(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil {
+			panic(err)
+		}
+	}(tx)
 
 	return getRandomAffirmations(ctx, tx, categoryIds)
 }
@@ -72,7 +78,9 @@ func getRandomAffirmations(ctx context.Context, tx *database.Tx, categoryIds []u
 		return nil, err
 	}
 
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		_ = rows.Close()
+	}(rows)
 
 	randomAffirmations := make([]*domain.RandomAffirmation, 0)
 	for rows.Next() {

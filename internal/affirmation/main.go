@@ -6,8 +6,8 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/gadoma/rafapi/internal/affirmation/infrastructure/http"
 	app "github.com/gadoma/rafapi/internal/common/infrastructure"
-	commonHttp "github.com/gadoma/rafapi/internal/common/infrastructure/http"
 )
 
 const (
@@ -16,18 +16,18 @@ const (
 	defaultServerDomain = "localhost"
 )
 
-func getRuntimeConfig() (dbDsn, serverAddr, serverDomain string) {
-	dbDsn = os.Getenv("RAFAPI_DB_DSN")
+func GetRuntimeConfig() (dbDsn, serverAddr, serverDomain string) {
+	dbDsn = os.Getenv("AFFIRMATION_DB_DSN")
 	if dbDsn == "" {
 		dbDsn = defaultDSN
 	}
 
-	serverAddr = os.Getenv("RAFAPI_SERVER_ADDR")
+	serverAddr = os.Getenv("AFFIRMATION_SERVER_ADDR")
 	if serverAddr == "" {
 		serverAddr = defaultServerAddr
 	}
 
-	serverDomain = os.Getenv("RAFAPI_SERVER_DOMAIN")
+	serverDomain = os.Getenv("AFFIRMATION_SERVER_DOMAIN")
 	if serverDomain == "" {
 		serverDomain = defaultServerDomain
 	}
@@ -40,9 +40,9 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 	go func() { <-c; cancel() }()
 
-	dbDsn, serverAddr, serverDomain := getRuntimeConfig()
+	dbDsn, serverAddr, serverDomain := GetRuntimeConfig()
 
-	bootstrap := commonHttp.NewBootstrap()
+	bootstrap := http.NewBootstrap()
 
 	main := app.NewApp(&app.AppConfig{
 		DbDSN:        dbDsn,
@@ -50,7 +50,7 @@ func main() {
 		ServerDomain: serverDomain,
 	}, bootstrap)
 
-	if runErr := main.Run(ctx); runErr != nil {
+	if runErr := main.Run(); runErr != nil {
 		fmt.Fprintln(os.Stderr, runErr)
 
 		if haltErr := main.Halt(); haltErr != nil {

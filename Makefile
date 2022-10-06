@@ -2,38 +2,28 @@ NAME=rafapi
 .DEFAULT_GOAL:=list
 
 go-test: # run tests
-	./scripts/test.sh
+	./scripts/go-test.sh
 .PHONY: test
 
 go-lint: # run linter
-	./scripts/lint.sh
+	./scripts/go-lint.sh
 .PHONY: lint
 
-go-compile: # compile app for Linux@AMD64 on OSX@ARM64 via MUSL
-	./scripts/compile.sh
+go-build: # build app
+	./scripts/go-build.sh
 .PHONY: compile
 
-docker-build: # build container
-	./scripts/build.sh
-.PHONY: build
-
-docker-run: # run container
-	./scripts/run.sh
-.PHONY: build
-
-clean: # delete generated files
-	./scripts/clean.sh
-.PHONY: compile
+#docker-run: # run container
+#	./scripts/docker-run.sh
+#.PHONY: build
 
 list: # list available commands
 	@grep : ./Makefile | grep -v "grep\|.PHONY\|.DEFAULT_GOAL" | sed s/#/\\t#/
 .PHONY: list
 
 all: # test compile build and run
+	@$(MAKE) go-lint
 	@$(MAKE) go-test
-	@$(MAKE) clean
-	@$(MAKE) go-compile
-	@$(MAKE) docker-build
-	@$(MAKE) docker-run
+	@$(MAKE) go-build
+#	@$(MAKE) docker-run
 .PHONY: all
-

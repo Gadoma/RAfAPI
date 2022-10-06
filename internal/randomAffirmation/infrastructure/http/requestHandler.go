@@ -16,7 +16,7 @@ func NewRandomAffirmationRequestHandler() *RandomAffirmationRequestHandler {
 func (h *RandomAffirmationRequestHandler) getRandomAffirmationCategoryIdsParameter(r *http.Request) ([]ulid.ULID, error) {
 	q := r.URL.Query()
 	queryIds := q["categoryIds"]
-	categoryIds := []ulid.ULID{}
+	var categoryIds []ulid.ULID
 
 	for _, i := range queryIds {
 		categoryId, err := ulid.Parse(i)

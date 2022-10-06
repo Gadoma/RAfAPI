@@ -1,0 +1,41 @@
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - asciicheck
+    - bodyclose
+    - exhaustive
+    - exportloopref
+    - gocognit
+    - goconst
+    - gofmt
+    - goheader
+    - goimports
+    - gosec
+    - misspell
+    - nakedret
+    - nestif
+    - noctx
+    - unconvert
+    - unparam
+    - whitespace
+    - contextcheck
+    - cyclop
+    - errorlint
+    - funlen
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+        - gosec
+        - noctx
+        - unparam
+        - bodyclose

@@ -399,7 +399,7 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
     422UnprocessableEntity:
-      description: The specified request paylaod cannot be processed
+      description: The specified request payload cannot be processed
       content:
         application/json:
           schema:

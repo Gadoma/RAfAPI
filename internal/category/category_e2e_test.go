@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/gadoma/rafapi/test"
+	"github.com/gadoma/rafapi/internal/category/test"
 	"github.com/oklog/ulid/v2"
 )
 
@@ -25,7 +25,9 @@ func TestApiGetCategories(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -64,7 +66,9 @@ func TestApiGetCategory(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -108,7 +112,9 @@ func TestApiGetCategoryError(t *testing.T) {
 		}
 
 		data, err := io.ReadAll(response.Body)
-		defer response.Body.Close()
+		defer func(Body io.ReadCloser) {
+			_ = Body.Close()
+		}(response.Body)
 
 		if err != nil {
 			t.Errorf("Could not read response because of %q", err)
@@ -149,7 +155,9 @@ func TestApiCreateCategory(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -200,7 +208,9 @@ func TestApiCreateCategoryError(t *testing.T) {
 		}
 
 		data, err := io.ReadAll(response.Body)
-		defer response.Body.Close()
+		defer func(Body io.ReadCloser) {
+			_ = Body.Close()
+		}(response.Body)
 
 		if err != nil {
 			t.Errorf("Could not read response because of %q", err)
@@ -242,7 +252,9 @@ func TestApiUpdateCategory(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -297,7 +309,9 @@ func TestApiUpdateCategoryError(t *testing.T) {
 		}
 
 		data, err := io.ReadAll(response.Body)
-		defer response.Body.Close()
+		defer func(Body io.ReadCloser) {
+			_ = Body.Close()
+		}(response.Body)
 
 		if err != nil {
 			t.Errorf("Could not read response because of %q", err)
@@ -337,7 +351,9 @@ func TestApiDeleteCategory(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -378,7 +394,9 @@ func TestApiDeleteCategoryError(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)

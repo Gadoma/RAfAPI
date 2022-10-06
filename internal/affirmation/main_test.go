@@ -1,12 +1,11 @@
 package main_test
 
 import (
-	"context"
 	"testing"
 
+	"github.com/gadoma/rafapi/internal/affirmation/infrastructure/http"
 	app "github.com/gadoma/rafapi/internal/common/infrastructure"
-	commonHttp "github.com/gadoma/rafapi/internal/common/infrastructure/http"
-	"github.com/gadoma/rafapi/test"
+	"github.com/gadoma/rafapi/internal/common/test"
 )
 
 const (
@@ -18,14 +17,14 @@ const (
 
 func MustRunMain(t *testing.T) *app.App {
 	test.PrepareTestDB()
-	b := commonHttp.NewBootstrap()
+	b := http.NewBootstrap()
 	main := app.NewApp(&app.AppConfig{
-		DbDSN:        test.GetDSN(test.TestDbDSN),
+		DbDSN:        test.GetDSN(test.TestingDbDSN),
 		ServerAddr:   testServerAddr,
 		ServerDomain: testServerDomain,
 	}, b)
 
-	if err := main.Run(context.Background()); err != nil {
+	if err := main.Run(); err != nil {
 		t.Fatal(err)
 	}
 

@@ -6,12 +6,12 @@ import (
 
 	"github.com/gadoma/rafapi/internal/affirmation/domain"
 	"github.com/gadoma/rafapi/internal/affirmation/infrastructure/database"
-	"github.com/gadoma/rafapi/test"
+	"github.com/gadoma/rafapi/internal/common/test"
 	"github.com/oklog/ulid/v2"
 )
 
-var affirmationIdString string = "01GEJ0CNNA3VXV1HMJCKFNCYJV"
-var categoryIdString string = "01GEJ0CRM2JW0KY2Z4R5CH4349"
+var affirmationIdString = "01GEJ0CNNA3VXV1HMJCKFNCYJV"
+var categoryIdString = "01GEJ0CRM2JW0KY2Z4R5CH4349"
 
 func TestAffirmationRepositoryGetAffirmations(t *testing.T) {
 	test.PrepareTestDB()

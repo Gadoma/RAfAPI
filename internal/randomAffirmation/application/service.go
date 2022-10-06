@@ -26,13 +26,10 @@ func (s *RandomAffirmationService) GetRandomAffirmation(ctx context.Context, cat
 		return nil, fmt.Errorf("an error occurred while getting all RandomAffirmations: %w", err)
 	}
 
-	stringElements := func(items []*domain.RandomAffirmation) []string {
-		var strings []string
-		for _, i := range items {
-			strings = append(strings, i.Text)
-		}
-		return strings
-	}(elements)
+	var stringElements []string
+	for _, i := range elements {
+		stringElements = append(stringElements, i.Text)
+	}
 
 	randomAffirmation := &domain.RandomAffirmation{
 		Text: strings.Join(stringElements, " "),
