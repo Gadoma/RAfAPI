@@ -79,6 +79,6 @@ func (s *Server) serveHTTP(w http.ResponseWriter, r *http.Request) {
 	s.router.ServeHTTP(w, r)
 }
 
-func (s *Server) handleNotFound(w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleNotFound(w http.ResponseWriter, _ *http.Request) {
 	s.responder.RespondError(w, "Not found", http.StatusNotFound)
 }

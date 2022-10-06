@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/gadoma/rafapi/test"
+	"github.com/gadoma/rafapi/internal/affirmation/test"
 	"github.com/oklog/ulid/v2"
 )
 
@@ -25,7 +25,9 @@ func TestApiGetAffirmations(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -64,7 +66,9 @@ func TestApiGetAffirmation(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -108,7 +112,9 @@ func TestApiGetAffirmationError(t *testing.T) {
 		}
 
 		data, err := io.ReadAll(response.Body)
-		defer response.Body.Close()
+		defer func(Body io.ReadCloser) {
+			_ = Body.Close()
+		}(response.Body)
 
 		if err != nil {
 			t.Errorf("Could not read response because of %q", err)
@@ -149,7 +155,9 @@ func TestApiCreateAffirmation(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -201,7 +209,9 @@ func TestApiCreateAffirmationError(t *testing.T) {
 		}
 
 		data, err := io.ReadAll(response.Body)
-		defer response.Body.Close()
+		defer func(Body io.ReadCloser) {
+			_ = Body.Close()
+		}(response.Body)
 
 		if err != nil {
 			t.Errorf("Could not read response because of %q", err)
@@ -243,7 +253,9 @@ func TestApiUpdateAffirmation(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -299,7 +311,9 @@ func TestApiUpdateAffirmationError(t *testing.T) {
 		}
 
 		data, err := io.ReadAll(response.Body)
-		defer response.Body.Close()
+		defer func(Body io.ReadCloser) {
+			_ = Body.Close()
+		}(response.Body)
 
 		if err != nil {
 			t.Errorf("Could not read response because of %q", err)
@@ -339,7 +353,9 @@ func TestApiDeleteAffirmation(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -380,7 +396,9 @@ func TestApiDeleteAffirmationError(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)

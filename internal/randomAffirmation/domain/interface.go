@@ -7,9 +7,9 @@ import (
 )
 
 type RandomAffirmationService interface {
-	GetRandomAffirmation(ctx context.Context, categortIds []ulid.ULID) (*RandomAffirmation, error)
+	GetRandomAffirmation(ctx context.Context, categoryIds []ulid.ULID) (*RandomAffirmation, error)
 }
 
 type RandomAffirmationRepository interface {
-	GetRandomAffirmations(ctx context.Context, categortIds []ulid.ULID) ([]*RandomAffirmation, error)
+	GetRandomAffirmations(ctx context.Context, categoryIds []ulid.ULID) ([]*RandomAffirmation, error)
 }

@@ -7,7 +7,7 @@ import (
 
 	"github.com/gadoma/rafapi/internal/randomAffirmation/application"
 	"github.com/gadoma/rafapi/internal/randomAffirmation/domain"
-	"github.com/gadoma/rafapi/test/mock"
+	"github.com/gadoma/rafapi/internal/randomAffirmation/test/mock"
 	"github.com/oklog/ulid/v2"
 )
 

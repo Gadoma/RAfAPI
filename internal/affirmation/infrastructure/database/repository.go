@@ -26,7 +26,12 @@ func (r *AffirmationRepository) GetAffirmations(ctx context.Context) ([]*domain.
 	if err != nil {
 		return nil, 0, err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil {
+			panic(err)
+		}
+	}(tx)
 
 	return getAffirmations(ctx, tx)
 }
@@ -36,7 +41,12 @@ func (r *AffirmationRepository) GetAffirmation(ctx context.Context, id ulid.ULID
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil {
+			panic(err)
+		}
+	}(tx)
 
 	return getAffirmation(ctx, tx, id)
 }
@@ -46,7 +56,12 @@ func (r *AffirmationRepository) CreateAffirmation(ctx context.Context, cac *doma
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil && !errors.Is(err, sql.ErrTxDone) {
+			panic(err)
+		}
+	}(tx)
 
 	err = createAffirmation(ctx, tx, cac.Id, cac.Text, cac.CategoryId)
 
@@ -66,7 +81,12 @@ func (r *AffirmationRepository) UpdateAffirmation(ctx context.Context, id ulid.U
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil && !errors.Is(err, sql.ErrTxDone) {
+			panic(err)
+		}
+	}(tx)
 
 	if err := updateAffirmation(ctx, tx, id, uac.Text, uac.CategoryId); err != nil {
 		return err
@@ -84,7 +104,12 @@ func (r *AffirmationRepository) DeleteAffirmation(ctx context.Context, id ulid.U
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil && !errors.Is(err, sql.ErrTxDone) {
+			panic(err)
+		}
+	}(tx)
 
 	if err := deleteAffirmation(ctx, tx, id); err != nil {
 		return err
@@ -117,7 +142,9 @@ func getAffirmations(ctx context.Context, tx *database.Tx) ([]*domain.Affirmatio
 		return nil, n, err
 	}
 
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		_ = rows.Close()
+	}(rows)
 
 	affirmations := make([]*domain.Affirmation, 0)
 	for rows.Next() {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/gadoma/rafapi/internal/common/test"
 	"github.com/gadoma/rafapi/internal/randomAffirmation/infrastructure/database"
-	"github.com/gadoma/rafapi/test"
 	"github.com/oklog/ulid/v2"
 )
 
@@ -30,7 +30,7 @@ func TestRandomAffirmationRepositoryGetRandomAffirmationsContent(t *testing.T) {
 	}
 }
 
-func TestRandomAffirmationRepositoryGetRandomAffirmationsLenght(t *testing.T) {
+func TestRandomAffirmationRepositoryGetRandomAffirmationsLength(t *testing.T) {
 	test.PrepareTestDB()
 	db := test.MustOpenDB(t)
 	defer test.CleanupTestDB()

@@ -7,8 +7,8 @@ import (
 
 	"github.com/gadoma/rafapi/internal/category/application"
 	"github.com/gadoma/rafapi/internal/category/domain"
+	"github.com/gadoma/rafapi/internal/category/test/mock"
 	common "github.com/gadoma/rafapi/internal/common/domain"
-	"github.com/gadoma/rafapi/test/mock"
 	"github.com/oklog/ulid/v2"
 )
 

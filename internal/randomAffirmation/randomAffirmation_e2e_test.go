@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/gadoma/rafapi/test"
+	"github.com/gadoma/rafapi/internal/randomAffirmation/test"
 	"github.com/oklog/ulid/v2"
 )
 
@@ -25,7 +25,9 @@ func TestApiGetRandomAffirmation(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -63,7 +65,9 @@ func TestApiGetRandomAffirmationEmpty(t *testing.T) {
 	}
 
 	data, err := io.ReadAll(response.Body)
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(response.Body)
 
 	if err != nil {
 		t.Errorf("Could not read response because of %q", err)
@@ -107,7 +111,9 @@ func TestApiGetRandomAffirmationError(t *testing.T) {
 		}
 
 		data, err := io.ReadAll(response.Body)
-		defer response.Body.Close()
+		defer func(Body io.ReadCloser) {
+			_ = Body.Close()
+		}(response.Body)
 
 		if err != nil {
 			t.Errorf("Could not read response because of %q", err)

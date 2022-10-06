@@ -8,8 +8,8 @@ import (
 
 	"github.com/gadoma/rafapi/internal/affirmation/application"
 	"github.com/gadoma/rafapi/internal/affirmation/domain"
+	"github.com/gadoma/rafapi/internal/affirmation/test/mock"
 	common "github.com/gadoma/rafapi/internal/common/domain"
-	"github.com/gadoma/rafapi/test/mock"
 	"github.com/oklog/ulid/v2"
 )
 

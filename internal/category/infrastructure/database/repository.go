@@ -25,7 +25,12 @@ func (r *CategoryRepository) GetCategories(ctx context.Context) ([]*domain.Categ
 	if err != nil {
 		return nil, 0, err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil {
+			panic(err)
+		}
+	}(tx)
 
 	return getCategories(ctx, tx)
 }
@@ -35,7 +40,12 @@ func (r *CategoryRepository) GetCategory(ctx context.Context, id ulid.ULID) (*do
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil {
+			panic(err)
+		}
+	}(tx)
 
 	return getCategory(ctx, tx, id)
 }
@@ -45,7 +55,12 @@ func (r *CategoryRepository) CreateCategory(ctx context.Context, ccc *domain.Cre
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil && !errors.Is(err, sql.ErrTxDone) {
+			panic(err)
+		}
+	}(tx)
 
 	err = createCategory(ctx, tx, ccc.Id, ccc.Name)
 
@@ -65,7 +80,12 @@ func (r *CategoryRepository) UpdateCategory(ctx context.Context, id ulid.ULID, u
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil && !errors.Is(err, sql.ErrTxDone) {
+			panic(err)
+		}
+	}(tx)
 
 	if err := updateCategory(ctx, tx, id, ucc.Name); err != nil {
 		return err
@@ -83,7 +103,12 @@ func (r *CategoryRepository) DeleteCategory(ctx context.Context, id ulid.ULID) e
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func(tx *database.Tx) {
+		err := tx.Rollback()
+		if err != nil && !errors.Is(err, sql.ErrTxDone) {
+			panic(err)
+		}
+	}(tx)
 
 	if err := deleteCategory(ctx, tx, id); err != nil {
 		return err
@@ -113,7 +138,9 @@ func getCategories(ctx context.Context, tx *database.Tx) ([]*domain.Category, in
 		return nil, n, err
 	}
 
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		_ = rows.Close()
+	}(rows)
 
 	categories := make([]*domain.Category, 0)
 	for rows.Next() {

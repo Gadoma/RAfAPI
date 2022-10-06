@@ -1,12 +1,10 @@
 package domain
 
-import (
-	"errors"
-)
+import "errors"
 
-var ErrorCreateAffirmationCommandInvalidId error = errors.New("Affirmation Id must be a valid ULID")
-var ErrorCreateAffirmationCommandInvalidCategoryId error = errors.New("Affirmation CategoryId must be a valid ULID")
-var ErrorCreateAffirmationCommandInvalidText error = errors.New("Affirmation Text cannot be empty")
+var ErrorCreateAffirmationCommandInvalidId = errors.New("affirmation Id must be a valid ULID")
+var ErrorCreateAffirmationCommandInvalidCategoryId = errors.New("affirmation CategoryId must be a valid ULID")
+var ErrorCreateAffirmationCommandInvalidText = errors.New("affirmation Text cannot be empty")
 
-var ErrorUpdateAffirmationCommandInvalidCategoryId error = errors.New("Affirmation CategoryId must be a valid ULID")
-var ErrorUpdateAffirmationCommandInvalidText error = errors.New("Affirmation Text cannot be empty")
+var ErrorUpdateAffirmationCommandInvalidCategoryId = errors.New("affirmation CategoryId must be a valid ULID")
+var ErrorUpdateAffirmationCommandInvalidText = errors.New("affirmation Text cannot be empty")

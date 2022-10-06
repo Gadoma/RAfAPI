@@ -3,7 +3,7 @@ package database_test
 import (
 	"testing"
 
-	"github.com/gadoma/rafapi/test"
+	"github.com/gadoma/rafapi/internal/common/test"
 )
 
 func TestMain(m *testing.M) {

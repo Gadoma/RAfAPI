@@ -1,7 +1,6 @@
-package common
+package infrastructure
 
 import (
-	"context"
 	"fmt"
 
 	commonDb "github.com/gadoma/rafapi/internal/common/infrastructure/database"
@@ -32,7 +31,7 @@ func NewApp(config *AppConfig, bootstrap commonHttp.Bootstrapper) *App {
 	}
 }
 
-func (app *App) Run(ctx context.Context) error {
+func (app *App) Run() error {
 	app.DB.DSN = app.Config.DbDSN
 
 	if err := app.DB.Open(); err != nil {
@@ -50,15 +49,15 @@ func (app *App) Run(ctx context.Context) error {
 	return nil
 }
 
-func (m *App) Halt() error {
-	if m.HTTPServer != nil {
-		if err := m.HTTPServer.Close(); err != nil {
+func (app *App) Halt() error {
+	if app.HTTPServer != nil {
+		if err := app.HTTPServer.Close(); err != nil {
 			return err
 		}
 	}
 
-	if m.DB != nil {
-		if err := m.DB.Close(); err != nil {
+	if app.DB != nil {
+		if err := app.DB.Close(); err != nil {
 			return err
 		}
 	}

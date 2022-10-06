@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"database/sql/driver"
-	"errors"
 	"fmt"
 	"time"
 
@@ -20,8 +19,6 @@ type DB struct {
 
 	Now func() time.Time
 }
-
-var ErrorNotFound error = errors.New("resource not found")
 
 func NewDB(dsn string) *DB {
 	db := &DB{
