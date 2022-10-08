@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  api_gateway:
+    image: nginx
+    volumes:
+      - "./docker/api_gateway/configs/api_conf.d:/etc/nginx/api_conf.d:ro"
+      - "./docker/api_gateway/configs/api_backends.conf:/etc/nginx/api_backends.conf:ro"
+      - "./docker/api_gateway/configs/api_gateway.conf:/etc/nginx/api_gateway.conf:ro"
+      - "./docker/api_gateway/configs/api_json_errors.conf:/etc/nginx/api_json_errors.conf:ro"
+      - "./docker/api_gateway/configs/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./docker/api_gateway/secrets/api_keys.conf:/etc/nginx/api_keys.conf:ro"
+    ports:
+      - "80:80"
+    depends_on:
+      - random_affirmations
+      - affirmations
+      - categories
+    networks:
+      - default
+      - backend
+
+  random_affirmations:
+    volumes:
+      - "./db/db.dist.sqlite:/app/db/db.dist.sqlite"
+    build:
+      context: .
+      dockerfile: ./docker/random_affirmations/Dockerfile
+      target: builder
+    networks:
+      - backend
+
+
+  affirmations:
+    volumes:
+      - "./db/db.dist.sqlite:/app/db/db.dist.sqlite"
+    build:
+      context: .
+      dockerfile: ./docker/affirmations/Dockerfile
+      target: builder
+    networks:
+      - backend
+
+
+  categories:
+    volumes:
+      - "./db/db.dist.sqlite:/app/db/db.dist.sqlite"
+    build:
+      context: .
+      dockerfile: ./docker/categories/Dockerfile
+      target: builder
+    networks:
+      - backend
+
+networks:
+  default:
+  backend:

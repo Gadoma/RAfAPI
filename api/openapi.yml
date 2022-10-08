@@ -2,7 +2,11 @@ openapi: 3.0.3
 info:
   title: Random Affirmations API (RAfAPI) - OpenAPI 3.0
   description: |-
-    This is a sample API which offers random affirmations. The returned content gets composed of random affirmation sentences selected from the requested categories. It is possible to govern both the categories and the component affirmation sentences.
+    This is a set of APIs that offer random affirmations and the capability of managing the source content. 
+    The random affirmation is a piece of text served to the user, which is composed of individual affirmative sentences 
+    belonging to different categories (health, love etc.) It’s possible to fetch the text in two ways. 
+    If no categories are specified in the request, the text is composed of 10 random sentences, each from a different 
+    category. If the user specifies the categories, the result contains one random sentence from each category.
   version: 1.0.0
 servers:
   - url: http://localhost:5000
