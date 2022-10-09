@@ -26,7 +26,6 @@ jobs:
         with:
           version: v1.50.0
           working-directory: internal/randomAffirmation
-          only-new-issues: true
   lint-affirmation:
     name: Lint affirmation
     runs-on: ubuntu-latest
@@ -40,7 +39,6 @@ jobs:
         with:
           version: v1.50.0
           working-directory: internal/affirmation
-          only-new-issues: true
   lint-category:
     name: Lint category
     runs-on: ubuntu-latest
@@ -54,4 +52,3 @@ jobs:
         with:
           version: v1.50.0
           working-directory: internal/category
-          only-new-issues: true
