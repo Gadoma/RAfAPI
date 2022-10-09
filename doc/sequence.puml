@@ -1,0 +1,17 @@
+@startuml Random Affirmation Sequence
+actor User as user
+participant ApiGateway as apigw
+participant RandomAffirmation as raf
+database    Database as db
+
+user -> apigw: Get Random Affirmation request
+apigw -> apigw: Rate limit check
+apigw -> apigw: Authorization
+apigw -> raf: Proxy request to service
+raf -> raf: Parse request
+raf -> db: Select random Affirmations
+db --> raf:
+raf -> raf: Compose Random Affirmation
+raf --> apigw: Return Random Affirmation JSON response
+apigw --> user: Return Random Affirmation JSON response
+@enduml
