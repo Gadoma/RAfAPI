@@ -2,10 +2,14 @@ openapi: 3.0.3
 info:
   title: Random Affirmations API (RAfAPI) - OpenAPI 3.0
   description: |-
-    This is a sample API which offers random affirmations. The returned content gets composed of random affirmation sentences selected from the requested categories. It is possible to govern both the categories and the component affirmation sentences.
-  version: 1.0.0
+    This is a set of APIs that offer random affirmations and the capability of managing the source content. 
+    The random affirmation is a piece of text served to the user, which is composed of individual affirmative sentences 
+    belonging to different categories (health, love etc.) It’s possible to fetch the text in two ways. 
+    If no categories are specified in the request, the text is composed of 10 random sentences, each from a different 
+    category. If the user specifies the categories, the result contains one random sentence from each category.
+  version: 2.0.0
 servers:
-  - url: http://localhost:5000
+  - url: http://localhost/api/v2
     description: Your local instance
 paths:
   /random_affirmation:
@@ -24,13 +28,21 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/RandomAffirmation"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
         "400":
           $ref: "#/components/responses/400BadRequest"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
   /affirmations:
     get:
       summary: Get a list of all available affirmation sentences
@@ -45,11 +57,19 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/Affirmation"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     post:
       summary: Create an affirmation sentence
       description: Creates a new affirmation sentence with the given content and assigned category
@@ -65,13 +85,21 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/AffirmationId"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
   /affirmations/{affirmationId}:
     get:
       summary: Get an affirmation sentence by id
@@ -88,15 +116,21 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/Affirmation"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
         "400":
           $ref: "#/components/responses/400BadRequest"
-        "404":
-          $ref: "#/components/responses/404NotFound"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     put:
       summary: Update an affirmation sentence by id
       description: Updates an affirmation sentence identified by id with the provided data
@@ -110,10 +144,16 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
-        "404":
-          $ref: "#/components/responses/404NotFound"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     delete:
       summary: Delete an affirmation sentence by id
       description: Deletes an affirmation sentence identified by id
@@ -125,8 +165,14 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
-        "404":
-          $ref: "#/components/responses/404NotFound"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
   /categories:
     get:
       summary: Get a list of all available categories
@@ -141,13 +187,21 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     type: array
                     items:
                       $ref: "#/components/schemas/Category"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     post:
       summary: Create category
       description: Creates a new category with the given name
@@ -163,13 +217,21 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/CategoryId"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
   /categories/{categoryId}:
     get:
       summary: Get a category by id
@@ -186,13 +248,19 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/Category"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
-        "404":
-          $ref: "#/components/responses/404NotFound"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     put:
       summary: Update a category by id
       description: Updates a category identified by id with the provided data
@@ -206,10 +274,16 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
-        "404":
-          $ref: "#/components/responses/404NotFound"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     delete:
       summary: Delete a category by id
       description: Deletes a category identified by id
@@ -221,10 +295,21 @@ paths:
           $ref: "#/components/responses/200NoContent"
         "400":
           $ref: "#/components/responses/400BadRequest"
-        "404":
-          $ref: "#/components/responses/404NotFound"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "403":
+          $ref: "#/components/responses/403Forbidden"
+        "429":
+          $ref: "#/components/responses/429TooManyRequests"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
 
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
   schemas:
     RandomAffirmation:
       type: object
@@ -286,13 +371,21 @@ components:
       required:
         - id
         - name
-
-    ResponseStatus:
+    ResponseOkStatus:
       type: string
-      enum: [OK, ERROR]
+      enum: [ OK ]
+    ResponseErrorStatus:
+      oneOf:
+        - type: string
+          enum: [ ERROR ]
+        - type: integer
+          minimum: 400
+          maximum: 599
+          example: 400
+          description: HTTP status code when the API gateway error interception is turned on
     ResponseEmptyData:
       type: array
-      items: {}
+      items: { }
       maxItems: 0
     ResponseDataCount:
       type: integer
@@ -300,12 +393,12 @@ components:
       example: 1
     ResponseErrorMessage:
       type: string
-      example: Not found
+      example: Bad request
     OkEmptyResponse:
       type: object
       properties:
         status:
-          $ref: "#/components/schemas/ResponseStatus"
+          $ref: "#/components/schemas/ResponseOkStatus"
         data:
           $ref: "#/components/schemas/ResponseEmptyData"
         count:
@@ -318,7 +411,7 @@ components:
       type: object
       properties:
         status:
-          $ref: "#/components/schemas/ResponseStatus"
+          $ref: "#/components/schemas/ResponseErrorStatus"
         message:
           $ref: "#/components/schemas/ResponseErrorMessage"
       required:
@@ -350,7 +443,7 @@ components:
           $ref: "#/components/schemas/CategoryId"
         uniqueItems: true
         minItems: 1
-        example: [01GEJ0CRM2JW0KY2Z4R5CH4349, 01GEJ0CRYJ1AAGQZDS9BR13AKS, 01GEJ0CS926M3GV1V1HXQY13AX]
+        example: [ 01GEJ0CRM2JW0KY2Z4R5CH4349, 01GEJ0CRYJ1AAGQZDS9BR13AKS, 01GEJ0CS926M3GV1V1HXQY13AX ]
 
   requestBodies:
     AffirmationRequest:
@@ -392,6 +485,18 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
+    401Unauthorized:
+      description: Unauthorized when no API Key is provided
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    403Forbidden:
+      description: When a wrong API Key is provided
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
     404NotFound:
       description: The specified resource was not found
       content:
@@ -404,9 +509,18 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
+    429TooManyRequests:
+      description: The API rate limit was exceeded
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
     500InternalServerError:
       description: There was an internal server error
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorResponse"
+
+security:
+  - ApiKeyAuth: [ ]

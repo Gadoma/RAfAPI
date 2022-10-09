@@ -1,41 +1,40 @@
 #!/usr/bin/env bash
-BASE_DIR=$(dirname "$(readlink -f "$0")")
 EXIT_STATUS=0
 
+echo ">>> Starting linter container"
+docker compose -f docker-compose.dist.yml --profile ci up -d linter --force-recreate
+
 echo ">>> Linting 'common'"
-docker run \
---rm \
--v $BASE_DIR/../internal/common/:/app/common \
+docker exec \
 -w /app/common \
-golangci/golangci-lint:v1.49.0 \
-golangci-lint run || EXIT_STATUS=$?
+linter \
+golangci-lint run \
+|| EXIT_STATUS=$?
 
 echo ">>> Linting 'affirmation'"
-docker run \
---rm \
--v $BASE_DIR/../internal/common/:/app/common \
--v $BASE_DIR/../internal/affirmation/:/app/affirmation \
+docker exec \
 -w /app/affirmation \
-golangci/golangci-lint:v1.49.0 \
-golangci-lint run || EXIT_STATUS=$?
+linter \
+golangci-lint run \
+|| EXIT_STATUS=$?
 
 echo ">>> Linting 'category'"
-docker run \
---rm \
--v $BASE_DIR/../internal/common/:/app/common \
--v $BASE_DIR/../internal/category/:/app/category \
+docker exec \
 -w /app/category \
-golangci/golangci-lint:v1.49.0 \
-golangci-lint run || EXIT_STATUS=$?
+linter \
+golangci-lint run \
+|| EXIT_STATUS=$?
 
 echo ">>> Linting 'randomAffirmation'"
-docker run \
---rm \
--v $BASE_DIR/../internal/common/:/app/common \
--v $BASE_DIR/../internal/randomAffirmation/:/app/randomAffirmation \
+docker exec \
 -w /app/randomAffirmation \
-golangci/golangci-lint:v1.49.0 \
-golangci-lint run || EXIT_STATUS=$?
+linter \
+golangci-lint run \
+|| EXIT_STATUS=$?
+
+echo ">>> Stopping linter container"
+docker stop linter
+docker rm linter
 
 if [ "$EXIT_STATUS" -eq "0" ]; then
 echo ">>> OK"

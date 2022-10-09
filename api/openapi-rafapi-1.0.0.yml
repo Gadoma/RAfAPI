@@ -1,0 +1,440 @@
+openapi: 3.0.3
+info:
+  title: Random Affirmations API (RAfAPI) - OpenAPI 3.0
+  description: |-
+    This is a set of APIs that offer random affirmations and the capability of managing the source content. 
+    The random affirmation is a piece of text served to the user, which is composed of individual affirmative sentences 
+    belonging to different categories (health, love etc.) It’s possible to fetch the text in two ways. 
+    If no categories are specified in the request, the text is composed of 10 random sentences, each from a different 
+    category. If the user specifies the categories, the result contains one random sentence from each category.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Your local instance
+paths:
+  /random_affirmation:
+    get:
+      summary: Get the random affirmation
+      description: Returns a random set of affirmation sentences selected from the given categories
+      operationId: getRandomAffirmation
+      parameters:
+        - $ref: "#/components/parameters/categoryIds"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: "#/components/schemas/ResponseOkStatus"
+                  data:
+                    $ref: "#/components/schemas/RandomAffirmation"
+                  count:
+                    $ref: "#/components/schemas/ResponseDataCount"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  /affirmations:
+    get:
+      summary: Get a list of all available affirmation sentences
+      description: Returns the full list of all available affirmation sentences
+      operationId: getAffirmations
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: "#/components/schemas/ResponseOkStatus"
+                  data:
+                    $ref: "#/components/schemas/Affirmation"
+                  count:
+                    $ref: "#/components/schemas/ResponseDataCount"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      summary: Create an affirmation sentence
+      description: Creates a new affirmation sentence with the given content and assigned category
+      operationId: createAffirmation
+      requestBody:
+        $ref: "#/components/requestBodies/AffirmationRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: "#/components/schemas/ResponseOkStatus"
+                  data:
+                    $ref: "#/components/schemas/AffirmationId"
+                  count:
+                    $ref: "#/components/schemas/ResponseDataCount"
+        "422":
+          $ref: "#/components/responses/422UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  /affirmations/{affirmationId}:
+    get:
+      summary: Get an affirmation sentence by id
+      description: Returns a single affirmation sentence identified by id
+      operationId: getAffirmationById
+      parameters:
+        - $ref: "#/components/parameters/affirmationId"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: "#/components/schemas/ResponseOkStatus"
+                  data:
+                    $ref: "#/components/schemas/Affirmation"
+                  count:
+                    $ref: "#/components/schemas/ResponseDataCount"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    put:
+      summary: Update an affirmation sentence by id
+      description: Updates an affirmation sentence identified by id with the provided data
+      operationId: updateAffirmation
+      parameters:
+        - $ref: "#/components/parameters/affirmationId"
+      requestBody:
+        $ref: "#/components/requestBodies/AffirmationRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200NoContent"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
+        "422":
+          $ref: "#/components/responses/422UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    delete:
+      summary: Delete an affirmation sentence by id
+      description: Deletes an affirmation sentence identified by id
+      operationId: deleteAffirmation
+      parameters:
+        - $ref: "#/components/parameters/affirmationId"
+      responses:
+        "200":
+          $ref: "#/components/responses/200NoContent"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  /categories:
+    get:
+      summary: Get a list of all available categories
+      description: Returns the full list of all available categories
+      operationId: getCategories
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: "#/components/schemas/ResponseOkStatus"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Category"
+                  count:
+                    $ref: "#/components/schemas/ResponseDataCount"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      summary: Create category
+      description: Creates a new category with the given name
+      operationId: createCategory
+      requestBody:
+        $ref: "#/components/requestBodies/CategoryRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: "#/components/schemas/ResponseOkStatus"
+                  data:
+                    $ref: "#/components/schemas/CategoryId"
+                  count:
+                    $ref: "#/components/schemas/ResponseDataCount"
+        "422":
+          $ref: "#/components/responses/422UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  /categories/{categoryId}:
+    get:
+      summary: Get a category by id
+      description: Returns a single category identified by id
+      operationId: getCategoryById
+      parameters:
+        - $ref: "#/components/parameters/categoryId"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: "#/components/schemas/ResponseOkStatus"
+                  data:
+                    $ref: "#/components/schemas/Category"
+                  count:
+                    $ref: "#/components/schemas/ResponseDataCount"
+        "404":
+          $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    put:
+      summary: Update a category by id
+      description: Updates a category identified by id with the provided data
+      operationId: updateCategory
+      parameters:
+        - $ref: "#/components/parameters/categoryId"
+      requestBody:
+        $ref: "#/components/requestBodies/CategoryRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200NoContent"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
+        "422":
+          $ref: "#/components/responses/422UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    delete:
+      summary: Delete a category by id
+      description: Deletes a category identified by id
+      operationId: deleteCategory
+      parameters:
+        - $ref: "#/components/parameters/categoryId"
+      responses:
+        "200":
+          $ref: "#/components/responses/200NoContent"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+
+components:
+  schemas:
+    RandomAffirmation:
+      type: object
+      properties:
+        text:
+          $ref: "#/components/schemas/AffirmationText"
+      required:
+        - text
+    AffirmationId:
+      type: string
+      format: ulid
+      minLength: 26
+      maxLength: 26
+      example: 01GEJ0CNNA3VXV1HMJCKFNCYJV
+    AffirmationText:
+      type: string
+      minLength: 1
+      example: I am calm.
+    AffirmationDateTime:
+      type: string
+      format: date-time
+      example: "2022-09-11T17:32:28Z"
+    Affirmation:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/AffirmationId"
+        text:
+          $ref: "#/components/schemas/AffirmationText"
+        categoryId:
+          $ref: "#/components/schemas/CategoryId"
+        createdAt:
+          $ref: "#/components/schemas/AffirmationDateTime"
+        updatedAt:
+          $ref: "#/components/schemas/AffirmationDateTime"
+      required:
+        - id
+        - text
+        - categoryId
+        - createdAt
+        - updatedAt
+    CategoryId:
+      type: string
+      format: ulid
+      minLength: 26
+      maxLength: 26
+      example: 01GEJ0CR9DWN7SA1QBSJE4DVKF
+    CategoryName:
+      type: string
+      minLength: 1
+      example: Love
+    Category:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/CategoryId"
+        name:
+          $ref: "#/components/schemas/CategoryName"
+      required:
+        - id
+        - name
+    ResponseOkStatus:
+      type: string
+      enum: [ OK ]
+    ResponseErrorStatus:
+      type: string
+      enum: [ ERROR ]
+    ResponseEmptyData:
+      type: array
+      items: { }
+      maxItems: 0
+    ResponseDataCount:
+      type: integer
+      minimum: 0
+      example: 1
+    ResponseErrorMessage:
+      type: string
+      example: Not found
+    OkEmptyResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/ResponseOkStatus"
+        data:
+          $ref: "#/components/schemas/ResponseEmptyData"
+        count:
+          $ref: "#/components/schemas/ResponseDataCount"
+      required:
+        - status
+        - data
+        - count
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/ResponseErrorStatus"
+        message:
+          $ref: "#/components/schemas/ResponseErrorMessage"
+      required:
+        - status
+        - message
+
+  parameters:
+    affirmationId:
+      name: affirmationId
+      in: path
+      description: ID of the affirmation
+      required: true
+      schema:
+        $ref: "#/components/schemas/AffirmationId"
+    categoryId:
+      name: categoryId
+      in: path
+      description: ID of the category
+      required: true
+      schema:
+        $ref: "#/components/schemas/CategoryId"
+    categoryIds:
+      name: categoryIds
+      in: query
+      description: A list of category IDs
+      schema:
+        type: array
+        items:
+          $ref: "#/components/schemas/CategoryId"
+        uniqueItems: true
+        minItems: 1
+        example: [ 01GEJ0CRM2JW0KY2Z4R5CH4349, 01GEJ0CRYJ1AAGQZDS9BR13AKS, 01GEJ0CS926M3GV1V1HXQY13AX ]
+
+  requestBodies:
+    AffirmationRequest:
+      description: Request containing affirmation sentence details to be inserted to/updated in the database
+      content:
+        application/json:
+          schema:
+            required:
+              - text
+              - categoryId
+            type: object
+            properties:
+              text:
+                $ref: "#/components/schemas/AffirmationText"
+              categoryId:
+                $ref: "#/components/schemas/CategoryId"
+    CategoryRequest:
+      description: Request containing category details to be inserted to/updated in the database
+      content:
+        application/json:
+          schema:
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                $ref: "#/components/schemas/CategoryName"
+
+  responses:
+    200NoContent:
+      description: The specified operation was successful and there is no data to return
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OkEmptyResponse"
+    400BadRequest:
+      description: The specified request cannot be processed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    404NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    422UnprocessableEntity:
+      description: The specified request payload cannot be processed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    500InternalServerError:
+      description: There was an internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"

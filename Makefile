@@ -9,21 +9,34 @@ go-lint: # run linter
 	./scripts/go-lint.sh
 .PHONY: lint
 
-go-build: # build app
+go-build: # run compilation
 	./scripts/go-build.sh
 .PHONY: compile
 
-#docker-run: # run container
-#	./scripts/docker-run.sh
-#.PHONY: build
+docker-build: # build the app containers
+	./scripts/docker-build.sh
+.PHONY: docker-build
+
+docker-start: # start the app containers
+	./scripts/docker-start.sh
+.PHONY: docker-start
+
+docker-stop: # stop the app containers
+	./scripts/docker-stop.sh
+.PHONY: docker-stop
+
+curl: # test the running application via curl
+	./scripts/curl.sh
+.PHONY: curl
 
 list: # list available commands
 	@grep : ./Makefile | grep -v "grep\|.PHONY\|.DEFAULT_GOAL" | sed s/#/\\t#/
 .PHONY: list
 
-all: # test compile build and run
-	@$(MAKE) go-lint
-	@$(MAKE) go-test
+all: # run the build pipeline and start the app
 	@$(MAKE) go-build
-#	@$(MAKE) docker-run
+	@$(MAKE) go-test
+	@$(MAKE) go-lint
+	@$(MAKE) docker-build
+	@$(MAKE) docker-start
 .PHONY: all
