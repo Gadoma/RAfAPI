@@ -1,4 +1,9 @@
-@startuml Random Affirmation Sequence
+@startuml Get Random Affirmation request flow
+
+title
+Get Random Affirmation request flow
+end title
+
 actor User as user
 participant ApiGateway as apigw
 participant RandomAffirmation as raf
@@ -14,4 +19,5 @@ db --> raf:
 raf -> raf: Compose Random Affirmation
 raf --> apigw: Return Random Affirmation JSON response
 apigw --> user: Return Random Affirmation JSON response
+
 @enduml

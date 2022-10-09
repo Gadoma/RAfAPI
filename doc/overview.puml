@@ -1,4 +1,5 @@
-@startuml RAfAPI Overview
+@startuml RAfAPI System Architecture
+
 !include https://raw.githubusercontent.com/kirchsth/C4-PlantUML/extended/C4_Container.puml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
@@ -11,15 +12,20 @@
 LAYOUT_LEFT_RIGHT()
 HIDE_STEREOTYPE()
 
+title
+RAfAPI System Architecture
+end title
+
 Person(user, "User", $sprite="users")
 
 System_Boundary(c1, "RAfAPI") {
-    Container(gateway, "API Gateway", "NGINX", "Handles proxying, versioning, auth, rate limiting", $sprite="nginx")
-    Container(cat, "Category", "GO", "Handles category logic", $sprite="go")
-    Container(aff, "Affirmation", "GO", "Handles affirmation logic", $sprite="go")
-    Container(raf, "Random Affirmation", "GO", "Handles random affirmation logic", $sprite="go")
+    Container(gateway, "API Gateway Container", "NGINX", "Handles proxying, versioning, auth, rate limiting", $sprite="nginx")
+    Container(cat, "Category Container", "Go", "Handles category logic", $sprite="go")
+    Container(aff, "Affirmatio Container", "Go", "Handles affirmation logic", $sprite="go")
+    Container(raf, "Random Affirmation Container", "Go", "Handles random affirmation logic", $sprite="go")
     ContainerDb(db, "Shared Db Volume", "SQLite", "Holds affirmation and category data")
 }
+
 
 Rel(user, gateway, "Uses", "http")
 Rel(gateway, raf, "Uses", "http")
