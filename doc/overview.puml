@@ -1,0 +1,37 @@
+@startuml RAfAPI System Architecture
+
+!include https://raw.githubusercontent.com/kirchsth/C4-PlantUML/extended/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/nginx.puml
+!include DEVICONS/go.puml
+!include FONTAWESOME/users.puml
+
+LAYOUT_LEFT_RIGHT()
+HIDE_STEREOTYPE()
+
+title
+RAfAPI System Architecture
+end title
+
+Person(user, "User", $sprite="users")
+
+System_Boundary(c1, "RAfAPI") {
+    Container(gateway, "API Gateway Container", "NGINX", "Handles proxying, versioning, auth, rate limiting", $sprite="nginx")
+    Container(cat, "Category Container", "Go", "Handles category logic", $sprite="go")
+    Container(aff, "Affirmatio Container", "Go", "Handles affirmation logic", $sprite="go")
+    Container(raf, "Random Affirmation Container", "Go", "Handles random affirmation logic", $sprite="go")
+    ContainerDb(db, "Shared Db Volume", "SQLite", "Holds affirmation and category data")
+}
+
+
+Rel(user, gateway, "Uses", "http")
+Rel(gateway, raf, "Uses", "http")
+Rel(gateway, aff, "Uses", "http")
+Rel(gateway, cat, "Uses", "http")
+Rel(raf, db, "Reads")
+Rel(aff, db, "Reads/Writes")
+Rel(cat, db, "Reads/Writes")
+
+@enduml
