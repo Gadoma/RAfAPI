@@ -1,0 +1,59 @@
+name: golangci-lint
+run-name: lint
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+      - main
+  pull_request:
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  lint-random-affirmation:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          version: v1.50.0
+          go-version: 1.19.2
+      - uses: actions/checkout@v3
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: `latest`
+          working-directory: internal/randomAffirmation
+          only-new-issues: true
+    lint-affirmation:
+      name: lint
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/setup-go@v3
+          with:
+            version: v1.50.0
+            go-version: 1.19.2
+        - uses: actions/checkout@v3
+        - name: golangci-lint
+          uses: golangci/golangci-lint-action@v3
+          with:
+            version: `latest`
+            working-directory: internal/affirmation
+            only-new-issues: true
+    lint-category:
+      name: lint
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/setup-go@v3
+          with:
+            version: v1.50.0
+            go-version: 1.19.2
+        - uses: actions/checkout@v3
+        - name: golangci-lint
+          uses: golangci/golangci-lint-action@v3
+          with:
+            version: `latest`
+            working-directory: internal/category
+            only-new-issues: true
