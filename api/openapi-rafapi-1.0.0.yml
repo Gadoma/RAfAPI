@@ -28,13 +28,15 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/RandomAffirmation"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
         "400":
           $ref: "#/components/responses/400BadRequest"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
   /affirmations:
     get:
       summary: Get a list of all available affirmation sentences
@@ -49,11 +51,13 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/Affirmation"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     post:
       summary: Create an affirmation sentence
       description: Creates a new affirmation sentence with the given content and assigned category
@@ -69,13 +73,15 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/AffirmationId"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
   /affirmations/{affirmationId}:
     get:
       summary: Get an affirmation sentence by id
@@ -92,7 +98,7 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/Affirmation"
                   count:
@@ -101,6 +107,8 @@ paths:
           $ref: "#/components/responses/400BadRequest"
         "404":
           $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     put:
       summary: Update an affirmation sentence by id
       description: Updates an affirmation sentence identified by id with the provided data
@@ -118,6 +126,8 @@ paths:
           $ref: "#/components/responses/404NotFound"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     delete:
       summary: Delete an affirmation sentence by id
       description: Deletes an affirmation sentence identified by id
@@ -131,6 +141,8 @@ paths:
           $ref: "#/components/responses/400BadRequest"
         "404":
           $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
   /categories:
     get:
       summary: Get a list of all available categories
@@ -145,13 +157,15 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     type: array
                     items:
                       $ref: "#/components/schemas/Category"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     post:
       summary: Create category
       description: Creates a new category with the given name
@@ -167,13 +181,15 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/CategoryId"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
   /categories/{categoryId}:
     get:
       summary: Get a category by id
@@ -190,13 +206,15 @@ paths:
                 type: object
                 properties:
                   status:
-                    $ref: "#/components/schemas/ResponseStatus"
+                    $ref: "#/components/schemas/ResponseOkStatus"
                   data:
                     $ref: "#/components/schemas/Category"
                   count:
                     $ref: "#/components/schemas/ResponseDataCount"
         "404":
           $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     put:
       summary: Update a category by id
       description: Updates a category identified by id with the provided data
@@ -214,6 +232,8 @@ paths:
           $ref: "#/components/responses/404NotFound"
         "422":
           $ref: "#/components/responses/422UnprocessableEntity"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
     delete:
       summary: Delete a category by id
       description: Deletes a category identified by id
@@ -227,6 +247,8 @@ paths:
           $ref: "#/components/responses/400BadRequest"
         "404":
           $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
 
 components:
   schemas:
@@ -290,13 +312,15 @@ components:
       required:
         - id
         - name
-
-    ResponseStatus:
+    ResponseOkStatus:
       type: string
-      enum: [OK, ERROR]
+      enum: [ OK ]
+    ResponseErrorStatus:
+      type: string
+      enum: [ ERROR ]
     ResponseEmptyData:
       type: array
-      items: {}
+      items: { }
       maxItems: 0
     ResponseDataCount:
       type: integer
@@ -309,7 +333,7 @@ components:
       type: object
       properties:
         status:
-          $ref: "#/components/schemas/ResponseStatus"
+          $ref: "#/components/schemas/ResponseOkStatus"
         data:
           $ref: "#/components/schemas/ResponseEmptyData"
         count:
@@ -322,7 +346,7 @@ components:
       type: object
       properties:
         status:
-          $ref: "#/components/schemas/ResponseStatus"
+          $ref: "#/components/schemas/ResponseErrorStatus"
         message:
           $ref: "#/components/schemas/ResponseErrorMessage"
       required:
@@ -354,7 +378,7 @@ components:
           $ref: "#/components/schemas/CategoryId"
         uniqueItems: true
         minItems: 1
-        example: [01GEJ0CRM2JW0KY2Z4R5CH4349, 01GEJ0CRYJ1AAGQZDS9BR13AKS, 01GEJ0CS926M3GV1V1HXQY13AX]
+        example: [ 01GEJ0CRM2JW0KY2Z4R5CH4349, 01GEJ0CRYJ1AAGQZDS9BR13AKS, 01GEJ0CS926M3GV1V1HXQY13AX ]
 
   requestBodies:
     AffirmationRequest:

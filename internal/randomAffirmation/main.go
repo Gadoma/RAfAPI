@@ -17,7 +17,7 @@ const (
 )
 
 func getRuntimeConfig() (dbDsn, serverAddr, serverDomain string) {
-	dbDsn = os.Getenv("RANDOMAFFIRMATION_DB_DSN")
+	dbDsn = os.Getenv("RAFAPI_DB_DSN")
 	if dbDsn == "" {
 		dbDsn = defaultDSN
 	}

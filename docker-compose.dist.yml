@@ -1,14 +1,14 @@
 version: "3.9"
 services:
   api_gateway:
-    image: nginx
+    image: nginx:1.23.1-alpine
+    restart: unless-stopped
     volumes:
       - "./docker/api_gateway/configs/api_conf.d:/etc/nginx/api_conf.d:ro"
       - "./docker/api_gateway/configs/api_backends.conf:/etc/nginx/api_backends.conf:ro"
       - "./docker/api_gateway/configs/api_gateway.conf:/etc/nginx/api_gateway.conf:ro"
       - "./docker/api_gateway/configs/api_json_errors.conf:/etc/nginx/api_json_errors.conf:ro"
       - "./docker/api_gateway/configs/nginx.conf:/etc/nginx/nginx.conf:ro"
-      - "./docker/api_gateway/secrets/api_keys.conf:/etc/nginx/api_keys.conf:ro"
     ports:
       - "80:80"
     depends_on:
@@ -18,39 +18,66 @@ services:
     networks:
       - default
       - backend
+    secrets:
+      - api_keys
+    profiles:
+      - app
 
   random_affirmations:
+    restart: unless-stopped
     volumes:
       - "./db/db.dist.sqlite:/app/db/db.dist.sqlite"
     build:
       context: .
       dockerfile: ./docker/random_affirmations/Dockerfile
-      target: builder
+      target: runner
     networks:
       - backend
-
+    profiles:
+      - app
 
   affirmations:
+    restart: unless-stopped
     volumes:
       - "./db/db.dist.sqlite:/app/db/db.dist.sqlite"
     build:
       context: .
       dockerfile: ./docker/affirmations/Dockerfile
-      target: builder
+      target: runner
     networks:
       - backend
-
+    profiles:
+      - app
 
   categories:
+    restart: unless-stopped
     volumes:
       - "./db/db.dist.sqlite:/app/db/db.dist.sqlite"
     build:
       context: .
       dockerfile: ./docker/categories/Dockerfile
-      target: builder
+      target: runner
     networks:
       - backend
+    profiles:
+      - app
+
+  linter:
+    restart: unless-stopped
+    image: golangci/golangci-lint:v1.50.0
+    container_name: linter
+    volumes:
+      - "./internal/common:/app/common"
+      - "./internal/affirmation:/app/affirmation"
+      - "./internal/category:/app/category"
+      - "./internal/randomAffirmation:/app/randomAffirmation"
+    command: tail -f /dev/null
+    profiles:
+      - ci
 
 networks:
-  default:
   backend:
+
+secrets:
+  api_keys:
+    file: ./docker/api_gateway/secrets/api_keys.conf
