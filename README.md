@@ -9,12 +9,12 @@
 
 ### What is RAfAPI
 
-☝️ RAfAPI is a small hobby project I’ve been building in order to practice Go. Initially I wanted to create a simple app offering daily random affirmations ✨. The idea was quickly refined into a set of APIs serving random affirmations with content management features. Oh and RAfAPI stands for **R**andom **AF**firmation **API**. 😜
+☝️ RAfAPI is a small hobby project I’ve been building in order to practice Go. Initially I wanted to create a simple app providing daily random affirmations ✨. The idea was quickly refined into a set of APIs offering random affirmations and content management features. Oh, and RAfAPI stands for **R**andom **AF**firmation **API** 😜.
 
 The **Random Affirmation** is a piece of text served to the user, which is composed of individual affirmative sentences (**Affirmations**) belonging to different **Categories** (health, love etc.) It’s possible to fetch the text in two ways. If no category ids are specified in the request, the text is composed of 10 random sentences, each from a different category. If the user specifies the desired category ids, the result contains one random sentence from each given category. 
 
 🛠 Some of the applied concepts/methodologies/tech:  
-Microservices, Containerization, Docker/Compose/BuildKit, Multi-stage build, Domain Driven Design, Clean Architecture, Dependency Injection, REST, OpenAPI/Swagger, API-first development, Automated testing (unit/integration/API/end-to-end, blackbox), Mocking, API Gateway, API key authentication, Rate limiting, Leaky Bucket,  ULID, Continuous Integration, Static analysis/Linting, Cross-compilation, CGo, Make, Bash scripting
+Microservices, Containerization, Docker/Compose/BuildKit, Multi-stage builds, Domain Driven Design, Clean Architecture, Dependency Injection, REST, OpenAPI/Swagger, API-first development, Automated testing (unit/integration/API/end-to-end, blackbox), Mocking, API Gateway, API key authentication, Rate limiting, Leaky Bucket, ULID, Continuous Integration, Static analysis/Linting, Cross-compilation, CGo, Make, Bash scripting.
 
 ### Features
 
@@ -27,11 +27,11 @@ There are three REST APIs available:
 
 Check the current (API Gateway) specification here: [openapi-rafapi-2.0.0.yml](api/openapi-rafapi-2.0.0.yml). You can also check the original (blueprint) spec here [openapi-rafapi-1.0.0.yml](api/openapi-rafapi-1.0.0.yml).
 
-👀 It's possible the explore the visual representation of the spec in a nice and interactive way by using the public **Swagger UI**: [explore openapi-rafapi-2.0.0.yml in Swagger UI](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Gadoma/RAfAPI/main/api/openapi-rafapi-2.0.0.yml)
+👀 It's possible to explore the visual representation of the spec in a nice and interactive way by using the public **Swagger UI**: [explore openapi-rafapi-2.0.0.yml in Swagger UI](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/Gadoma/RAfAPI/main/api/openapi-rafapi-2.0.0.yml)
 
 ### Architecture
 
-☝️ The whole application is **decomposed by subdomain** into three distinct microservices (`randomAffirmation`, `affirmation`, `category`), each serving a single API. The services are separate Go applications in form of Go modules. There is a fourth Go module `common` which is not executable and contains common parts used by the other three modules (main app logic, http and database handling, errors).
+☝️ The whole application is **decomposed by subdomain** into three distinct microservices (`randomAffirmation`, `affirmation`, `category`), each handling a single API. The services are separate Go applications in form of Go modules. There is a fourth Go module `common` which is not executable and contains common parts used by the other three modules (main app logic, http and database handling, errors).
 
 Each service adopts a layered architecture (`domain`, `application`, `infrastructure` layers) inspired by **Domain Driven Design** and **Clean Architecture** by Uncle Bob.
 
@@ -42,13 +42,13 @@ The application uses minimal dependencies:
 - [github.com/oklog/ulid](https://github.com/oklog/ulid)  
 - [github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)  
 
-The microservices are containerized via Docker on a **service-per-container** basis. There are five abstract services described using Compose specification: `random_affirmations`, `affirmations`, `categories`, `api_gateway` and `linter` (described later). The image versions are pinned to achieve **reproducible builds**. The containers are built via BuildKit **multistage builds**. As I work on a MacBook with MacOS on ARM64 architecture the builds involve **cross-compilation** to AMD64 architecture (to run on linux/amd64). This includes CGo, required for Go's SQLite bindings. Configuration is passed to the Go services through ENV variables.
+The microservices are containerized via Docker on a **service-per-container** basis. There are five abstract services described using Compose specification: `random_affirmations`, `affirmations`, `categories`, `api_gateway` and `linter` (explained later). The image versions are pinned to achieve **reproducible builds**. The containers are built via BuildKit **multistage builds**. As I work on a MacBook Pro with MacOS on ARM64 architecture the builds involve **cross-compilation** to AMD64 architecture (to run on linux/amd64). This includes CGo, required for Go's SQLite bindings. Configuration is passed to the Go services through ENV variables.
 
 ![RAfAPI Architecture](doc/overview.png)
 
 The `api_gateway` is an NGINX instance operating as a **reverse proxy** and providing additional functionality such as API versioning, authorization via x-api-key header and request rate limiting (separate for authenticated and unauthenticated requests; via **Leaky Bucket** algorithm). 
 
-Additionally the gateway masks all 404 responses as 400 to **prevent rogue endpoint discovery**/traversal. It is also capable of masking the detailed application error messages returned by default from the services with generic messages. The latter feature is currently turned off for development and educational purposes therefore the inner details are visible when something goes wrong.
+Additionally the gateway masks all 404 responses as 400 to **prevent rogue endpoint discovery**/traversal. It is also capable of masking (via generic messages) the detailed application error messages returned from the services by default. The latter feature is currently turned off for development and educational purposes therefore the inner details are visible when something goes wrong.
 
 
 ![RAfAPI Random Affirmation request flow](doc/sequence.png)
@@ -77,7 +77,7 @@ Additionally there is a local linting stack ran in a dedicated container (the `l
 - **list** - list available commands  
 - **all** - run the build pipeline and start the app. 
 
-🚀 To start the application just checkout the repository and run `make start`. If you additionally want to run the CI pipeline, run `make all`. In any case, this should build and start all of the services in their respective containers. Once the containers are up and running you can use Postman or cURL to send requests to the API. 
+🚀 To start the application just checkout the repository and run `make start`. If you additionally want to run the CI pipeline, run `make all`. In any case, this should build and start all of the app services in their respective containers. Once the containers are up and running you can use Postman or cURL to send requests to the API. 
 
 Remember to include the `x-api-key` header with a correct api key. You can find examples in the NGINX config at [docker/api_gateway/secrets/api_keys.conf](docker/api_gateway/secrets/api_keys.conf) (normally the **api keys should never land in the repository** but as this is a training project, they are included therein for testing purposes). 
 
@@ -87,13 +87,13 @@ To make local testing easier there is a dedicated make target for running a few 
 
 This repository contains the following directories:
 
-- **.github** - Github Actions workflow definitions
-- **api** - OpenAPI specifications
-- **db** - Database migrations/seeds and SQLite files
-- **doc** - PlantUML diagram definitions and images
-- **docker** - Dockerfiles and NGINX configuration files
-- **internal** - Go source files
-- **scripts** - Bash scripting
+- **[.github](.github)** - Github Actions workflow definitions
+- **[api](api)** - OpenAPI specifications
+- **[db](db)** - Database migrations/seeds and SQLite files
+- **[doc](doc)** - PlantUML diagram definitions and images
+- **[docker](docker)** - Dockerfiles and NGINX configuration files
+- **[internal](internal)** - Go source files
+- **[scripts](scripts)** - Bash scripting
 
 ### Roadmap
 
@@ -102,9 +102,11 @@ This repository contains the following directories:
 1. Add an **SSL certificate** and switch to HTTPS-only traffic, for improved security.
 2. Switch Secrets handling from Compose Secrets to **BuildKit Mount Secret**, for improved security.
 3. Introduce caching via **BuildKit Mount Cache** for APT cache and Go package/build cache, for faster builds.
-4. Prepare a set of fully-fledged **C4 model** architecture diagrams, for improved documentation.
+4. Prepare a set of fully fledged **C4 model** architecture diagrams, for improved documentation.
 5. Switch base images to **Alpine Linux** and use **MUSL** for cross-compilation, for smaller builds.
 6. Introduce **HashiCorp Vault** service to manage secrets, for improved security.
 7. Refactor the code to **Ports&Adapters** architecture with applied **CQRS**, for improved maintainability.
+8. Introduce **logging** of application errors via **Graylog**, for improved monitoring
+9. Introduce gathering of application **metrics** and **tracing** via **TIG** stack (Telegraf, InfluxDB, and Grafana), for improved observability
 
 
